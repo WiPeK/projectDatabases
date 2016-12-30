@@ -70,19 +70,23 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 | The $query_builder variables lets you determine whether or not to load
 | the query builder class.
 */
-$active_group = 'default';
+$active_group = 'XE';
 $query_builder = TRUE;
 
-$db['default'] = array(
+$tnsname = '(DESCRIPTION = (ADDRESS = (PROTOCOL = TCP)(HOST = localhost)(PORT = 1521))
+        (CONNECT_DATA = (SERVER = DEDICATED) (SERVICE_NAME = XE)))';
+
+$db['XE'] = array(
 	'dsn'	=> '',
-	'hostname' => 'localhost',
-	'username' => '',
-	'password' => '',
+	//'dsn'	=> '//localhost/XE',
+	'hostname' => $tnsname,
+	'username' => 'SKLEP',
+	'password' => 'root',
 	'database' => '',
-	'dbdriver' => 'mysqli',
+	'dbdriver' => 'oci8',
 	'dbprefix' => '',
-	'pconnect' => FALSE,
-	'db_debug' => (ENVIRONMENT !== 'production'),
+	'pconnect' => TRUE,
+	'db_debug' => FALSE, //(ENVIRONMENT !== 'production'),
 	'cache_on' => FALSE,
 	'cachedir' => '',
 	'char_set' => 'utf8',
