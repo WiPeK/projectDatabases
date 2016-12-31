@@ -6,6 +6,9 @@ class Admin_Controller extends MY_Controller {
 	{
 		parent::__construct();
 		$this->data['subview'] = '';
+		//if(!isset($_SESSION['logged'] || $_SESSION['logged'] == false)
+		//	redirect(site_url());
+		$this->load->model('admin_m');
 	}
 
 }

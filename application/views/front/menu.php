@@ -15,8 +15,8 @@
   </ul>
   <?php if(!isset($_SESSION['logged'])): ?>
     <form action="<?php echo site_url('home/login'); ?>" method="post" accept-charset="utf-8" class="form-inline float-xs-right">
-      <input class="form-control" type="text" placeholder="Login">
-      <input class="form-control" type="password" placeholder="Hasło">
+      <input name="email" class="form-control" type="email" placeholder="email" value="wipekxxx@gmail.com">
+      <input name="password" class="form-control" type="password" placeholder="Hasło" value="12345">
       <button class="btn btn-outline-info" type="submit">Zaloguj</button>
     </form>
   <?php endif; ?>

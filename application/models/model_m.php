@@ -30,6 +30,19 @@ class Model_m extends CI_Model {
 		),
 	);
 
+	public $rules_login = array(
+		'email' => array(
+			'field' => 'email',
+			'label' => 'Email',
+			'rules' => 'trim|required|xss_clean|max_length[255]|valid_email'
+		),
+		'password' => array(
+			'field' => 'password',
+			'label' => 'Hasło',
+			'rules' => 'trim|required|xss_clean|max_length[50]'
+		),
+	);
+
 	public function __construct()
 	{
 		parent::__construct();
@@ -146,6 +159,20 @@ class Model_m extends CI_Model {
 				return false;
 			}
 		}
+	}
+
+	public function login()
+	{
+		$email = $this->input->post('email');
+		$pass = $this->input->post('password');
+		$query = $this->db->query("SELECT count(id_employees) as cnt FROM employees WHERE email_employees = '$email' AND password_employees = DBMS_OBFUSCATION_TOOLKIT.md5 (input => UTL_RAW.cast_to_raw('$pass'))");
+		if($query->row()->CNT == 1)
+		{
+			$_SESSION['logged'] = true;
+			return true;
+		}
+		else
+			return false;
 	}
 
 }

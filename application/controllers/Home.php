@@ -45,7 +45,7 @@ class Home extends Frontend_Controller {
 		if(empty($_SESSION['basket']))
 			redirect(site_url());
 		$this->data['items'] = $this->model_m->getToBasket();
-		$this->data['basketPrice'] = 0;
+		$this->data['basketPrice'] = 0.00;
 		foreach($this->data['items'] as $pr)
 		{
 			$key = array_search($pr->ID_ITEMS, array_column($_SESSION['basket'], 'id'));
@@ -89,7 +89,16 @@ class Home extends Frontend_Controller {
 
 	public function login()
 	{
-		
+		$rules = $this->model_m->rules_login;
+		$this->form_validation->set_rules($rules);
+		if($this->form_validation->run())
+		{
+			if($this->model_m->login())
+				redirect(site_url('admin/admin'));
+			else
+				$_SESSION['statusBuy'] = "Niepomyślne logowanie";
+		}
+		redirect(site_url());
 	}
 
 }
