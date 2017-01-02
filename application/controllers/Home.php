@@ -101,6 +101,13 @@ class Home extends Frontend_Controller {
 		redirect(site_url());
 	}
 
+	public function logout()
+	{
+		unset($_SESSION['logged']);
+		unset($_SESSION['email']);
+		redirect(site_url());
+	}
+
 }
 
 /* End of file Home.php */

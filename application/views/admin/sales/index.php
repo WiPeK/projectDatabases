@@ -4,7 +4,7 @@
 			<strong><?php echo $_SESSION['status_edit']; unset($_SESSION['status_edit']); ?></strong>
 		</div>
 	<?php endif; ?>
-	<h2>Pracownicy</h2><a href="<?php echo site_url('admin/employees/edit'); ?>" class="btn btn-primary">Dodaj nowego pracownika</a>
+	<h2>Sprzedaże</h2>
 	<div class="table-responsive">
         <table class="table table-striped">
 	        <thead>
@@ -12,6 +12,7 @@
 					<th>Id</th>
 					<th>SPRZEDAWCA</th>
 					<th>KLIENT</th>
+					<th>PRZEDMIOTY</th>
 					<th>DATA ZATWIERDZENIA</th>
 					<th>Cena</th>
 					<th>Status</th>
@@ -20,25 +21,29 @@
 			<tbody>
 				<?php foreach ($sales as $sal): ?>
 					<tr>
-						<td><?php echo $empl->ID_EMPLOYEES; ?></td>
-						<td><?php echo $empl->NAME_EMPLOYEES; ?></td>
-						<td><?php echo $empl->SURNAME_EMPLOYEES; ?></td>
-						<td><?php echo $empl->EMAIL_EMPLOYEES; ?></td>
-						<td><?php echo $empl->ADDRESS_EMPLOYEES; ?></td>
-						<td><?php echo $empl->PHONE_NUMBER_EMPLOYEES; ?></td>
+						<td><?php echo $sal->ID_SALES; ?></td>
 						<td>
-							<a href="<?php echo site_url('admin/employees/show_sales/') . $empl->ID_EMPLOYEES; ?>" target="_blank">Pokaż sprzedaże</a>
+							<?php if($sal->ID_EMPLOYEES != NULL): ?>
+								<a href="<?php echo site_url('admin/employees/edit/') . $sal->ID_EMPLOYEES; ?>" target="_blank"><?php echo $sal->SPRZEDAWCA; ?></a>
+							<?php else: ?>
+								SPRZEDAŻ NIEZAAKCEPTOWANA
+							<?php endif; ?>
 						</td>
 						<td>
-							<a href="<?php echo site_url('admin/employees/show_provides/') . $empl->ID_EMPLOYEES; ?>" target="_blank">Pokaż dostawy</a>
+							<?php echo $sal->KLIENT; ?>
 						</td>
 						<td>
-							<a href="<?php echo site_url('admin/employees/edit/') . $empl->ID_EMPLOYEES; ?>" target="_blank">Edytuj</a> 
+							<a target="_blank" href="<?php echo site_url('admin/sales/showItems/') . $sal->ID_SALES; ?>">Pokaż przedmioty</a>
 						</td>
+						<td><?php echo ($sal->EXECUTION_DATE_SALES)? $sal->EXECUTION_DATE_SALES : "SPRZEDAŻ NIEZAAKCEPTOWANA"; ?></td>
+						<td><?php echo $sal->SALES_PRICE; ?></td>
 						<td>
-							<?php echo anchor(site_url('admin/employees/delete/') . $empl->ID_EMPLOYEES, 'Usuń', array(
-								'onclick' => "return confirm('Czy napewno chcesz usunąć element. Nie będzie można tego cofnąć. Jesteś pewien?');"
-							)); ?>
+							<?php if($sal->STATUS_SALES): ?>
+								ZATWIERDZONY
+							<?php else: ?>
+								<a href="<?php echo site_url('admin/sales/acceptSale/') . $sal->ID_SALES; ?>" class="btn btn-primary">ZATWIERDŹ</a>
+								<a href="<?php echo site_url('admin/sales/declineSale/') . $sal->ID_SALES; ?>" class="btn btn-primary">ODRZUĆ</a>
+							<?php endif; ?>
 						</td>
 					</tr>
 				<?php endforeach ?>

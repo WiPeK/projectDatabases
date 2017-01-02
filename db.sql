@@ -71,7 +71,7 @@ CREATE TABLE items(
 	name_items VARCHAR2(255) NOT NULL,
 	model_items VARCHAR2(255) NOT NULL,
 	quantity_items NUMBER NOT NULL CONSTRAINT itq_ch CHECK(quantity_items >= 0),
-	price_items DECIMAL DEFAULT 0.00,
+	price_items NUMBER(10,2) DEFAULT 0.00,
 	id_producers NUMBER NOT NULL,
 	CONSTRAINT it_pr_fk FOREIGN KEY (id_producers) REFERENCES producers(id_producers)
 );
@@ -89,7 +89,7 @@ CREATE TABLE sales(
 	id_employees NUMBER,
 	id_clients NUMBER NOT NULL,
 	execution_date_sales DATE,
-	sales_price DECIMAL DEFAULT 0.00,
+	sales_price NUMBER(10,2) DEFAULT 0.00,
 	status_sales CHAR(1) DEFAULT 0,
 	CONSTRAINT sal_em_fk FOREIGN KEY (id_employees) REFERENCES employees(id_employees),
 	CONSTRAINT sal_cl_fk FOREIGN KEY (id_clients) REFERENCES clients(id_clients)
@@ -108,7 +108,7 @@ CREATE TABLE provides(
 	id_employees NUMBER NOT NULL,
 	id_providers NUMBER NOT NULL,
 	execution_date_provides DATE,
-	provides_price DECIMAL DEFAULT 0.00,
+	provides_price NUMBER(10,2) DEFAULT 0.00,
 	status_provides CHAR(1) DEFAULT 0,
 	CONSTRAINT prs_em_fk FOREIGN KEY (id_employees) REFERENCES employees(id_employees),
 	CONSTRAINT prs_pr_fk FOREIGN KEY (id_providers) REFERENCES providers(id_providers)
@@ -123,7 +123,8 @@ CREATE TABLE provides_items(
 );
 
 CREATE OR REPLACE VIEW item_relation AS SELECT items.id_items, items.name_items, items.model_items, items.quantity_items, items.price_items, producers.name_producers, LISTAGG(CONCAT(CONCAT(features.name_features, ' '), items_features.value), '; ') WITHIN GROUP (ORDER BY features.name_features) "ftrs" FROM items JOIN items_features ON items.id_items = items_features.id_items JOIN features ON items_features.id_features = features.id_features JOIN producers ON items.id_producers = producers.id_producers GROUP BY items.id_items, items.name_items, items.model_items, items.quantity_items, items.price_items, producers.name_producers;
-
+CREATE OR REPLACE VIEW salesView AS SELECT sales.id_sales, sales.id_employees, sales.id_clients, sales.execution_date_sales, sales.sales_price, sales.status_sales, CONCAT(employees.name_employees ,CONCAT(' ', employees.surname_employees)) as SPRZEDAWCA, CONCAT(clients.name_clients ,CONCAT(' ', clients.surname_clients)) as KLIENT FROM sales LEFT OUTER JOIN employees ON sales.id_employees = employees.id_employees LEFT OUTER JOIN clients ON sales.id_clients = clients.id_clients ORDER BY id_sales DESC;
+CREATE OR REPLACE VIEW providesView AS SELECT provides.id_provides, provides.id_employees, provides.id_providers, provides.execution_date_provides, provides.provides_price, provides.status_provides, CONCAT(employees.name_employees ,CONCAT(' ', employees.surname_employees)) as SPRZEDAWCA, providers.name_providers FROM provides LEFT OUTER JOIN employees ON provides.id_employees = employees.id_employees LEFT OUTER JOIN providers ON provides.id_providers = clients.id_providers ORDER BY id_provides DESC;
 -- create or replace procedure checkClient(
 -- name in varchar2,
 -- surname in varchar2,

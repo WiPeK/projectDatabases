@@ -169,6 +169,7 @@ class Model_m extends CI_Model {
 		if($query->row()->CNT == 1)
 		{
 			$_SESSION['logged'] = true;
+			$_SESSION['email'] = $email;
 			return true;
 		}
 		else

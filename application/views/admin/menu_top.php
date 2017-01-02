@@ -10,6 +10,7 @@
       <a class="nav-item nav-link" href="<?php echo site_url('admin/items'); ?>">Asortyment</a>
       <a class="nav-item nav-link" href="<?php echo site_url('admin/sales'); ?>">Sprzedaże</a>
       <a class="nav-item nav-link" href="<?php echo site_url('admin/provides'); ?>">Dostawy</a>
+      <a class="nav-item nav-link" href="<?php echo site_url('home/logout'); ?>">Wyloguj</a>
     </nav>
   </div>
 </nav>
