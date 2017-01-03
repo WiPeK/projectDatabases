@@ -112,6 +112,56 @@ class Admin_m extends CI_Model {
 		)
 	);
 
+	public function get_new_employee()
+	{
+		$employee = new stdClass();
+		$employee->ID_EMPLOYEES = '';
+		$employee->NAME_EMPLOYEES = '';
+		$employee->SURNAME_EMPLOYEES = '';
+		$employee->EMAIL_EMPLOYEES = '';
+		$employee->PASSWORD_EMPLOYEES = '';
+		$employee->ADDRESS_EMPLOYEES = '';
+		$employee->PHONE_NUMBER_EMPLOYEES = '';
+		return $employee;
+	}
+
+	public function get_new_provider()
+	{
+		$provider = new stdClass();
+		$provider->ID_PROVIDERS = '';
+		$provider->NAME_PROVIDERS = '';
+		$provider->EMAIL_PROVIDERS = '';
+		$provider->ADDRESS_PROVIDERS = '';
+		$provider->PHONE_NUMBER_PROVIDERS = '';
+		$provider->NIP_PROVIDERS = '';
+		$provider->REGON_PROVIDERS = '';
+		return $provider;
+	}
+
+	public function get_new_item()
+	{
+		$item = new StdClass();
+		$item->ID_ITEMS = '';
+		$item->NAME_ITEMS = '';
+		$item->MODEL_ITEMS = '';
+		$item->QUANTITY_ITEMS = '';
+		$item->PRICE_ITEMS = '';
+		$item->ID_PRODUCERS = '';
+		return $item;
+	}
+
+	public function get_new_provide()
+	{
+		$provide = new stdClass();
+		$provide->ID_PROVIDES = '';
+		$provide->ID_EMPLOYEES = '';
+		$provide->ID_PROVIDERS = '';
+		$provide->EXECUTION_DATE_PROVIDES = '';
+		$provide->PROVIDES_PRICE = '';
+		$provide->STATUS_PROVIDES = 0;
+		return $provide;
+	}
+
 	public function __construct()
 	{
 		parent::__construct();
@@ -119,7 +169,7 @@ class Admin_m extends CI_Model {
 
 	public function getStats()
 	{
-		$query = $this->db->query("SELECT (SELECT COUNT(*) FROM employees) as empl, (SELECT COUNT(*) FROM clients) as clnt, (SELECT COUNT(*) FROM items) as itct, (SELECT COUNT(*) FROM producers) as prdc, (SELECT COUNT(*) FROM providers) as prvd, (SELECT COUNT(*) FROM sales) as slsc, (SELECT SUM(quantity_sales_items) FROM sales_items) as sism, (SELECT SUM(sales_price) FROM sales) as salpr  FROM dual");
+		$query = $this->db->query("SELECT * FROM stats");
 		return $query->result();
 	}
 
@@ -196,7 +246,7 @@ class Admin_m extends CI_Model {
 
 	public function getItemsToProvide()
 	{
-		$query = $this->db->query("SELECT ID_ITEMS, CONCAT(CONCAT(NAME_ITEMS, ' '), MODEL_ITEMS) as ITEM FROM items ORDER BY id_items");
+		$query = $this->db->query("SELECT * FROM itemsToProvide");
 
 		$array = array();
 
@@ -257,158 +307,6 @@ class Admin_m extends CI_Model {
 		return $query->row();
 	}
 
-	public function get_new_employee()
-	{
-		$employee = new stdClass();
-		$employee->ID_EMPLOYEES = '';
-		$employee->NAME_EMPLOYEES = '';
-		$employee->SURNAME_EMPLOYEES = '';
-		$employee->EMAIL_EMPLOYEES = '';
-		$employee->PASSWORD_EMPLOYEES = '';
-		$employee->ADDRESS_EMPLOYEES = '';
-		$employee->PHONE_NUMBER_EMPLOYEES = '';
-		return $employee;
-	}
-
-	public function get_new_provider()
-	{
-		$provider = new stdClass();
-		$provider->ID_PROVIDERS = '';
-		$provider->NAME_PROVIDERS = '';
-		$provider->EMAIL_PROVIDERS = '';
-		$provider->ADDRESS_PROVIDERS = '';
-		$provider->PHONE_NUMBER_PROVIDERS = '';
-		$provider->NIP_PROVIDERS = '';
-		$provider->REGON_PROVIDERS = '';
-		return $provider;
-	}
-
-	public function get_new_item()
-	{
-		$item = new StdClass();
-		$item->ID_ITEMS = '';
-		$item->NAME_ITEMS = '';
-		$item->MODEL_ITEMS = '';
-		$item->QUANTITY_ITEMS = '';
-		$item->PRICE_ITEMS = '';
-		$item->ID_PRODUCERS = '';
-		return $item;
-	}
-
-	public function get_new_provide()
-	{
-		$provide = new stdClass();
-		$provide->ID_PROVIDES = '';
-		$provide->ID_EMPLOYEES = '';
-		$provide->ID_PROVIDERS = '';
-		$provide->EXECUTION_DATE_PROVIDES = '';
-		$provide->PROVIDES_PRICE = '';
-		$provide->STATUS_PROVIDES = 0;
-		return $provide;
-	}
-
-	public function addNewEmployee()
-	{
-		$name = $this->input->post('name');
-		$surname = $this->input->post('surname');
-		$email = $this->input->post('email');
-		$address = $this->input->post('address');
-		$phone = $this->input->post('phone');
-		$pass = $this->input->post('password');
-		if(empty($pass)) return false;
-		$query = $this->db->query("INSERT INTO employees VALUES(employees_seq.NEXTVAL, '$name', '$surname', '$email', DBMS_OBFUSCATION_TOOLKIT.md5 (input => UTL_RAW.cast_to_raw('$pass')), '$address', '$phone')");
-		return ($this->db->affected_rows()? true : false);
-	}
-
-	public function updateEmployee($id)
-	{
-		$name = $this->input->post('name');
-		$surname = $this->input->post('surname');
-		$email = $this->input->post('email');
-		$address = $this->input->post('address');
-		$phone = $this->input->post('phone');
-		if(!empty($this->input->post('password')))
-		{
-			$pass = $this->input->post('password');
-			$query = $this->db->query("UPDATE employees SET NAME_EMPLOYEES = '$name', SURNAME_EMPLOYEES = '$surname', EMAIL_EMPLOYEES = '$email', ADDRESS_EMPLOYEES = '$address', PASSWORD_EMPLOYEES = DBMS_OBFUSCATION_TOOLKIT.md5 (input => UTL_RAW.cast_to_raw('$pass')), PHONE_NUMBER_EMPLOYEES = '$phone' WHERE ID_EMPLOYEES = $id");
-		}
-		else
-		{
-			$query = $this->db->query("UPDATE employees SET NAME_EMPLOYEES = '$name', SURNAME_EMPLOYEES = '$surname', EMAIL_EMPLOYEES = '$email', ADDRESS_EMPLOYEES = '$address', PHONE_NUMBER_EMPLOYEES = '$phone' WHERE ID_EMPLOYEES = $id");
-		}
-		return ($this->db->affected_rows()? true : false);
-	}
-
-	public function addNewProvider()
-	{
-		$name = $this->input->post('name');
-		$email = $this->input->post('email');
-		$address = $this->input->post('address');
-		$phone = $this->input->post('phone');
-		$nip = $this->input->post('nip');
-		$regon = $this->input->post('regon');
-		$query = $this->db->query("INSERT INTO providers VALUES(providers_seq.NEXTVAL, '$name', '$email', '$address', '$phone', '$nip', '$regon')");
-		return ($this->db->affected_rows()? true : false);
-	}
-
-	public function updateProvider($id)
-	{
-		$name = $this->input->post('name');
-		$email = $this->input->post('email');
-		$address = $this->input->post('address');
-		$phone = $this->input->post('phone');
-		$nip = $this->input->post('nip');
-		$regon = $this->input->post('regon');
-		$query = $this->db->query("UPDATE providers SET NAME_PROVIDERS = '$name', EMAIL_PROVIDERS = '$email', ADDRESS_PROVIDERS = '$address', PHONE_NUMBER_PROVIDERS = '$phone', NIP_PROVIDERS = '$nip', REGON_PROVIDERS = '$regon' WHERE ID_PROVIDERS = $id");
-		return ($this->db->affected_rows()? true : false);
-	}
-
-	public function addNewItem()
-	{
-		$name = $this->input->post('name');
-		$model = $this->input->post('model');
-		$quantity = $this->input->post('quantity');
-		$price = $this->input->post('price');
-		$producer = $this->input->post('producer');
-		$this->db->query("INSERT INTO items VALUES(items_seq.NEXTVAL, '$name', '$model', $quantity, '$price', $producer)");
-		return $this->db->affected_rows();
-	}
-
-	public function updateItem($id)
-	{
-		$name = $this->input->post('name');
-		$model = $this->input->post('model');
-		$quantity = $this->input->post('quantity');
-		$price = $this->input->post('price');
-		$producer = $this->input->post('producer');
-		$this->db->query("UPDATE items SET NAME_ITEMS = '$name', MODEL_ITEMS = '$model', QUANTITY_ITEMS = $quantity, PRICE_ITEMS = $price, ID_PRODUCERS = $producer WHERE ID_ITEMS = $id");
-		return $this->db->affected_rows();
-	}
-
-	public function deleteEmployee($id)
-	{
-		$query = $this->db->query("DELETE FROM employees WHERE id_employees = $id");
-		return ($this->db->affected_rows()? true : false);
-	}
-
-	public function deleteClient($id)
-	{
-		$query = $this->db->query("DELETE FROM clients WHERE id_clients = $id");
-		return ($this->db->affected_rows()? true : false);
-	}
-
-	public function deleteProducer($id)
-	{
-		$query = $this->db->query("DELETE FROM producers WHERE id_producers = $id");
-		return ($this->db->affected_rows()? true : false);
-	}
-
-	public function deleteProvider($id)
-	{
-		$query = $this->db->query("DELETE FROM providers WHERE id_providers = $id");
-		return ($this->db->affected_rows()? true : false);
-	}
-
 	public function getEmployeeSales($id)
 	{
 		$query = $this->db->query("SELECT sales.id_sales, sales.id_employees, CONCAT(employees.name_employees, employees.surname_employees) as Sprzedawca, sales.id_clients, CONCAT(clients.name_clients, clients.surname_clients) as Klient, sales.EXECUTION_DATE_SALES, sales.SALES_PRICE, sales.status_sales FROM sales JOIN employees ON sales.id_employees = employees.id_employees JOIN clients ON sales.id_clients = clients.id_clients WHERE sales.id_employees = $id");
@@ -433,13 +331,6 @@ class Admin_m extends CI_Model {
 		return $query->result();
 	}
 
-	public function addProducer()
-	{
-		$name = $this->input->post('name');
-		$query = $this->db->query("INSERT INTO producers VALUES(producers_seq.NEXTVAL, '$name')");
-		return ($this->db->affected_rows()? true : false);
-	}
-
 	public function getItemsToProducer($id)
 	{
 		$query = $this->db->query("SELECT items.id_items, CONCAT(items.name_items, CONCAT(' ', items.model_items)) as item, producers.name_producers FROM items JOIN producers ON items.id_producers = producers.id_producers WHERE items.id_producers = $id");
@@ -452,11 +343,126 @@ class Admin_m extends CI_Model {
 		return $query->result();
 	}
 
+	public function getProvideItems($id)
+	{
+		$query = $this->db->query("SELECT items.id_items, CONCAT(items.name_items, CONCAT(' ', items.model_items)) as ITEM, provides_items.QUANTITY_PROVIDES_ITEMS, producers.name_producers FROM items JOIN producers ON items.id_producers = producers.id_producers JOIN provides_items ON items.id_items = provides_items.id_items JOIN provides ON provides_items.id_provides = provides.id_provides WHERE provides.id_provides = $id");
+		return $query->result();
+	}
+
+	public function addNewEmployee()
+	{
+		$name = $this->input->post('name');
+		$surname = $this->input->post('surname');
+		$email = $this->input->post('email');
+		$address = $this->input->post('address');
+		$phone = $this->input->post('phone');
+		$pass = $this->input->post('password');
+		if(empty($pass)) return false;
+		$query = $this->db->query("INSERT INTO employees VALUES(employees_seq.NEXTVAL, '$name', '$surname', '$email', DBMS_OBFUSCATION_TOOLKIT.md5 (input => UTL_RAW.cast_to_raw('$pass')), '$address', '$phone')");
+		return $this->db->affected_rows();
+	}
+
+	public function updateEmployee($id)
+	{
+		$name = $this->input->post('name');
+		$surname = $this->input->post('surname');
+		$email = $this->input->post('email');
+		$address = $this->input->post('address');
+		$phone = $this->input->post('phone');
+		if(!empty($this->input->post('password')))
+		{
+			$pass = $this->input->post('password');
+			$query = $this->db->query("UPDATE employees SET NAME_EMPLOYEES = '$name', SURNAME_EMPLOYEES = '$surname', EMAIL_EMPLOYEES = '$email', ADDRESS_EMPLOYEES = '$address', PASSWORD_EMPLOYEES = DBMS_OBFUSCATION_TOOLKIT.md5 (input => UTL_RAW.cast_to_raw('$pass')), PHONE_NUMBER_EMPLOYEES = '$phone' WHERE ID_EMPLOYEES = $id");
+		}
+		else
+		{
+			$query = $this->db->query("UPDATE employees SET NAME_EMPLOYEES = '$name', SURNAME_EMPLOYEES = '$surname', EMAIL_EMPLOYEES = '$email', ADDRESS_EMPLOYEES = '$address', PHONE_NUMBER_EMPLOYEES = '$phone' WHERE ID_EMPLOYEES = $id");
+		}
+		return $this->db->affected_rows();
+	}
+
+	public function addNewProvider()
+	{
+		$name = $this->input->post('name');
+		$email = $this->input->post('email');
+		$address = $this->input->post('address');
+		$phone = $this->input->post('phone');
+		$nip = $this->input->post('nip');
+		$regon = $this->input->post('regon');
+		$query = $this->db->query("INSERT INTO providers VALUES(providers_seq.NEXTVAL, '$name', '$email', '$address', '$phone', '$nip', '$regon')");
+		return $this->db->affected_rows();
+	}
+
+	public function updateProvider($id)
+	{
+		$name = $this->input->post('name');
+		$email = $this->input->post('email');
+		$address = $this->input->post('address');
+		$phone = $this->input->post('phone');
+		$nip = $this->input->post('nip');
+		$regon = $this->input->post('regon');
+		$query = $this->db->query("UPDATE providers SET NAME_PROVIDERS = '$name', EMAIL_PROVIDERS = '$email', ADDRESS_PROVIDERS = '$address', PHONE_NUMBER_PROVIDERS = '$phone', NIP_PROVIDERS = '$nip', REGON_PROVIDERS = '$regon' WHERE ID_PROVIDERS = $id");
+		return $this->db->affected_rows();
+	}
+
+	public function addNewItem()
+	{
+		$name = $this->input->post('name');
+		$model = $this->input->post('model');
+		$quantity = $this->input->post('quantity');
+		$price = $this->input->post('price');
+		$producer = $this->input->post('producer');
+		$this->db->query("INSERT INTO items VALUES(items_seq.NEXTVAL, '$name', '$model', $quantity, '$price', $producer)");
+		return $this->db->affected_rows();
+	}
+
+	public function updateItem($id)
+	{
+		$name = $this->input->post('name');
+		$model = $this->input->post('model');
+		$quantity = $this->input->post('quantity');
+		$price = $this->input->post('price');
+		$producer = $this->input->post('producer');
+		$this->db->query("UPDATE items SET NAME_ITEMS = '$name', MODEL_ITEMS = '$model', QUANTITY_ITEMS = $quantity, PRICE_ITEMS = '$price', ID_PRODUCERS = $producer WHERE ID_ITEMS = $id");
+		return $this->db->affected_rows();
+	}
+
+	public function deleteEmployee($id)
+	{
+		$query = $this->db->query("DELETE FROM employees WHERE id_employees = $id");
+		return $this->db->affected_rows();
+	}
+
+	public function deleteClient($id)
+	{
+		$query = $this->db->query("DELETE FROM clients WHERE id_clients = $id");
+		return $this->db->affected_rows();
+	}
+
+	public function deleteProducer($id)
+	{
+		$query = $this->db->query("DELETE FROM producers WHERE id_producers = $id");
+		return $this->db->affected_rows();
+	}
+
+	public function deleteProvider($id)
+	{
+		$query = $this->db->query("DELETE FROM providers WHERE id_providers = $id");
+		return $this->db->affected_rows();
+	}
+
+	public function addProducer()
+	{
+		$name = $this->input->post('name');
+		$query = $this->db->query("INSERT INTO producers VALUES(producers_seq.NEXTVAL, '$name')");
+		return $this->db->affected_rows();
+	}
+
 	public function acceptSale($id)
 	{
 		$email = $_SESSION['email'];
 		$this->db->query("UPDATE sales SET id_employees = (SELECT id_employees FROM employees WHERE email_employees = '$email'), status_sales = 1, EXECUTION_DATE_SALES = TO_CHAR(CURRENT_TIMESTAMP,'YYYY-MM-DD HH24:MI:SS') WHERE id_sales = $id");
-		return ($this->db->affected_rows()? true : false);
+		return $this->db->affected_rows();
 	}
 
 	public function declineSale($id)
@@ -520,12 +526,6 @@ class Admin_m extends CI_Model {
 		return $this->db->affected_rows();
 	}
 
-	public function getProvideItems($id)
-	{
-		$query = $this->db->query("SELECT items.id_items, CONCAT(items.name_items, CONCAT(' ', items.model_items)) as ITEM, provides_items.QUANTITY_PROVIDES_ITEMS, producers.name_producers FROM items JOIN producers ON items.id_producers = producers.id_producers JOIN provides_items ON items.id_items = provides_items.id_items JOIN provides ON provides_items.id_provides = provides.id_provides WHERE provides.id_provides = $id");
-		return $query->result();
-	}
-
 	public function addItemToProvide($id)
 	{
 		$id_item = $this->input->post('item');
@@ -548,7 +548,7 @@ class Admin_m extends CI_Model {
 
 	public function closeProvide($id)
 	{
-		$this->db->query("UPDATE provides SET EXECUTION_DATE_PROVIDES = TO_CHAR(CURRENT_TIMESTAMP,'YYYY-MM-DD HH24:MI:SS'), PROVIDES_PRICE = (SELECT SUM(PROVIDES_ITEMS.QUANTITY_PROVIDES_ITEMS * ITEMS.PRICE_ITEMS) FROM PROVIDES_ITEMS LEFT OUTER JOIN ITEMS ON PROVIDES_ITEMS.ID_ITEMS = ITEMS.ID_ITEMS), STATUS_PROVIDES = 1");
+		$this->db->query("UPDATE provides SET EXECUTION_DATE_PROVIDES = TO_CHAR(CURRENT_TIMESTAMP,'YYYY-MM-DD HH24:MI:SS'), PROVIDES_PRICE = (SELECT SUM(PROVIDES_ITEMS.QUANTITY_PROVIDES_ITEMS * ITEMS.PRICE_ITEMS) FROM PROVIDES_ITEMS LEFT OUTER JOIN ITEMS ON PROVIDES_ITEMS.ID_ITEMS = ITEMS.ID_ITEMS WHERE PROVIDES_ITEMS.ID_PROVIDES = $id), STATUS_PROVIDES = 1 WHERE ID_PROVIDES = $id");
 		return $this->db->affected_rows();
 	}
 

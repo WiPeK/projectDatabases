@@ -244,3 +244,23 @@ INSERT INTO providers VALUES(providers_seq.NEXTVAL,'Poczta Polska','pocztapolska
 CREATE OR REPLACE VIEW item_relation AS SELECT items.id_items, items.name_items, items.model_items, items.quantity_items, items.price_items, producers.name_producers, LISTAGG(CONCAT(CONCAT(features.name_features, ' '), items_features.value), '; ') WITHIN GROUP (ORDER BY features.name_features) "ftrs" FROM items JOIN items_features ON items.id_items = items_features.id_items JOIN features ON items_features.id_features = features.id_features JOIN producers ON items.id_producers = producers.id_producers GROUP BY items.id_items, items.name_items, items.model_items, items.quantity_items, items.price_items, producers.name_producers;
 CREATE OR REPLACE VIEW salesView AS SELECT sales.id_sales, sales.id_employees, sales.id_clients, sales.execution_date_sales, sales.sales_price, sales.status_sales, CONCAT(employees.name_employees ,CONCAT(' ', employees.surname_employees)) as SPRZEDAWCA, CONCAT(clients.name_clients ,CONCAT(' ', clients.surname_clients)) as KLIENT FROM sales LEFT OUTER JOIN employees ON sales.id_employees = employees.id_employees LEFT OUTER JOIN clients ON sales.id_clients = clients.id_clients ORDER BY id_sales DESC;
 CREATE OR REPLACE VIEW providesView AS SELECT provides.id_provides, provides.id_employees, provides.id_providers, provides.execution_date_provides, provides.provides_price, provides.status_provides, CONCAT(employees.name_employees ,CONCAT(' ', employees.surname_employees)) as SPRZEDAWCA, providers.name_providers FROM provides LEFT OUTER JOIN employees ON provides.id_employees = employees.id_employees LEFT OUTER JOIN providers ON provides.id_providers = providers.id_providers ORDER BY id_provides DESC;
+CREATE OR REPLACE VIEW stats AS SELECT (SELECT COUNT(*) FROM employees) as empl, (SELECT COUNT(*) FROM clients) as clnt, (SELECT COUNT(*) FROM items) as itct, (SELECT COUNT(*) FROM producers) as prdc, (SELECT COUNT(*) FROM providers) as prvd, (SELECT COUNT(*) FROM sales) as slsc, (SELECT SUM(quantity_sales_items) FROM sales_items) as sism, (SELECT SUM(sales_price) FROM sales) as salpr  FROM dual;
+CREATE OR REPLACE VIEW itemsToProvide AS SELECT ID_ITEMS, CONCAT(CONCAT(NAME_ITEMS, ' '), MODEL_ITEMS) as ITEM FROM items ORDER BY id_items;
+--view
+
+--cursor --w procedurach
+--cursor
+--cursor
+--cursor
+
+--trigger --na usuniecie pracownika admin_m/deleteEmployee
+--trigger --na usuniecie klienta admin_m/deleteClient
+--trigger --na usuniecie dostawcy admin_m/deleteProvider
+
+--procedura do admin_m/doBuy
+--procedura do admin_m/declineSale
+--procedura do admin_m/deleteItem
+--procedura do admin_m/deleteFeature
+--procedura do admin_m/addItemToProvide
+--procedura do admin_m/deleteItemFromProvide
+--procedura do admin_m/declineProvide
