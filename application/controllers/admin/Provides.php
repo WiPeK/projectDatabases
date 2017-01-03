@@ -44,7 +44,7 @@ class Provides extends Admin_Controller {
 			if($status)
 			{
 				$_SESSION['status_edit'] = "Dostawy zostały zaaktualizowane";
-				redirect(site_url('admin/provides/edit/') . $id);
+				redirect(site_url('admin/provides'));
 			}
 			else
 				$_SESSION['status_edit'] = "Dostawy nie zostały zaaktualizowane";

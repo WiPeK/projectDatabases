@@ -26,16 +26,12 @@ class Home extends Frontend_Controller {
 				'value' => $_POST['itemtobasket']
 			);
 		}
-		elseif (empty($_SESSION['basket']))
+		else
 		{
-			$_SESSION['basket'][0] = array(
+			$_SESSION['basket'][] = array(
 				'id' => $id,
 				'value' => $_POST['itemtobasket']
 			);
-		}
-		else
-		{
-			array_push($_SESSION['basket'],array('id' => $id, 'value' => $_POST['itemtobasket']));
 		}
 		redirect(site_url('home/basket'));
 	}
@@ -60,8 +56,10 @@ class Home extends Frontend_Controller {
 		$this->load->view('front/template', $this->data);
 	}
 
-	public function deleteFromBasket($id)
+	public function deleteFromBasket($id = NULL)
 	{
+		if($id = NULL)
+			unset($_SESSION['basket']);
 		$key = array_search($id, array_column($_SESSION['basket'], 'id'));
 		unset($_SESSION['basket'][$key]);
 			$_SESSION['basket'] = array_values($_SESSION['basket']);
