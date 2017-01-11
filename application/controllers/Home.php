@@ -78,7 +78,7 @@ class Home extends Frontend_Controller {
 				$_SESSION['statusBuy'] .= 'Zakup zakończony powodzeniem';
 				unset($_SESSION['basket']);
 				$_SESSION['basket'] = array();
-				redirect(site_url());
+				//redirect(site_url());
 			}
 		}
 		$this->data['subview'] = 'front/buy';

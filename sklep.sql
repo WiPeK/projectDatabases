@@ -88,7 +88,7 @@ CREATE TABLE sales(
 	id_sales NUMBER CONSTRAINT sales_pk PRIMARY KEY,
 	id_employees NUMBER,
 	id_clients NUMBER NOT NULL,
-	execution_date_sales TIMESTAMP,
+	execution_date_sales TIMESTAMP(0),
 	sales_price NUMBER(10,2) DEFAULT 0.00,
 	status_sales CHAR(1) DEFAULT 0,
 	CONSTRAINT sal_em_fk FOREIGN KEY (id_employees) REFERENCES employees(id_employees),
@@ -107,7 +107,7 @@ CREATE TABLE provides(
 	id_provides NUMBER CONSTRAINT provides_pk PRIMARY KEY,
 	id_employees NUMBER NOT NULL,
 	id_providers NUMBER NOT NULL,
-	execution_date_provides TIMESTAMP,
+	execution_date_provides TIMESTAMP(0),
 	provides_price NUMBER(10,2) DEFAULT 0.00,
 	status_provides CHAR(1) DEFAULT 0,
 	CONSTRAINT prs_em_fk FOREIGN KEY (id_employees) REFERENCES employees(id_employees),
@@ -122,6 +122,7 @@ CREATE TABLE provides_items(
 	CONSTRAINT pri_it_fk FOREIGN KEY (id_items) REFERENCES items(id_items)
 );
 
+INSERT INTO producers VALUES(producers_seq.NEXTVAL, 'Usunięty producent');
 INSERT INTO producers VALUES(producers_seq.NEXTVAL, 'Intel');
 INSERT INTO producers VALUES(producers_seq.NEXTVAL, 'Nvidia');
 INSERT INTO producers VALUES(producers_seq.NEXTVAL, 'Corsair');
@@ -140,7 +141,8 @@ INSERT INTO producers VALUES(producers_seq.NEXTVAL, 'be quiet!');
 INSERT INTO producers VALUES(producers_seq.NEXTVAL, 'SilentiumPC');
 INSERT INTO producers VALUES(producers_seq.NEXTVAL, 'Gigabyte');
 
-INSERT INTO items VALUES(items_seq.NEXTVAL, 'Procesor', 'i7', 34, 1234.45, 1);
+INSERT INTO items VALUES(items_seq.NEXTVAL, 'Usunięty przedmiot', 'Brak', 0, 0.00, 2);
+INSERT INTO items VALUES(items_seq.NEXTVAL, 'Procesor', 'i7', 34, 1234.45, 2);
 INSERT INTO items VALUES(items_seq.NEXTVAL, 'Karta graficzna', 'GTX1070TI', 5, 2099.00, 2);
 INSERT INTO items VALUES(items_seq.NEXTVAL, 'Zasilacz', 'VS Series 550W 120mm',32, 219.00, 3);
 INSERT INTO items VALUES(items_seq.NEXTVAL, 'Napęd', 'DRW-24D5MT/BLK/B/AS', 50, 59.00, 4);
@@ -160,6 +162,7 @@ INSERT INTO items VALUES(items_seq.NEXTVAL, 'Pamięć RAM', 'Play DDR3 4GB 1600M
 INSERT INTO items VALUES(items_seq.NEXTVAL, 'Klawiatura', 'Force K7', 13, 179.00, 17);
 INSERT INTO items VALUES(items_seq.NEXTVAL, 'Mysz', 'FH34', 13, 125.00, 4);
 
+INSERT INTO features VALUES(features_seq.NEXTVAL, 'Brak parametru');
 INSERT INTO features VALUES(features_seq.NEXTVAL, 'Rodzaj:');
 INSERT INTO features VALUES(features_seq.NEXTVAL, 'Złącze:');
 INSERT INTO features VALUES(features_seq.NEXTVAL, 'Typ złącza:');
@@ -219,6 +222,7 @@ INSERT INTO items_features VALUES(14, 9, 'Czarny');
 INSERT INTO items_features VALUES(9, 9, 'Czarny');
 INSERT INTO items_features VALUES(9, 10, 'HP 552');
 
+INSERT INTO employees VALUES(employees_seq.NEXTVAL, 'Usunięty pracownik', 'Usunięty pracownik', 'brak', DBMS_OBFUSCATION_TOOLKIT.md5 (input => UTL_RAW.cast_to_raw('dsfdsfsd435345')), 'Brak', '000000000');
 INSERT INTO employees VALUES(employees_seq.NEXTVAL, 'Krzysztof', 'Adamczyk', 'wipekxxx@gmail.com', DBMS_OBFUSCATION_TOOLKIT.md5 (input => UTL_RAW.cast_to_raw(12345)), 'Wzdół 26-010 Bodzentyn', '5555555555');
 INSERT INTO employees VALUES(employees_seq.NEXTVAL,'Janusz','Tracz','janusztracz@naszertv.pl',DBMS_OBFUSCATION_TOOLKIT.md5 (input => UTL_RAW.cast_to_raw(12345)),'Kraków,ul.Wieliczkowa 23','721024123');
 INSERT INTO employees VALUES(employees_seq.NEXTVAL,'Marek','Wieluń','marekwielun@naszertv.pl',DBMS_OBFUSCATION_TOOLKIT.md5 (input => UTL_RAW.cast_to_raw(12345)),'Kraków,ul.Browarna 4/23','722424100');
@@ -227,6 +231,7 @@ INSERT INTO employees VALUES(employees_seq.NEXTVAL,'Katarzyna','Madryt','katarzy
 INSERT INTO employees VALUES(employees_seq.NEXTVAL,'Wojciech','Tokaj','wojciechtokaj@naszertv.pl',DBMS_OBFUSCATION_TOOLKIT.md5 (input => UTL_RAW.cast_to_raw(12345)),'Kraków,ul.Warszawska 24','721264234');
 INSERT INTO employees VALUES(employees_seq.NEXTVAL,'Monika','Mohito','monikamohito@wnaszertv.pl',DBMS_OBFUSCATION_TOOLKIT.md5 (input => UTL_RAW.cast_to_raw(12345)),'Kraków,ul.Wawelska 66','761234340');
 
+INSERT INTO clients VALUES(clients_seq.NEXTVAL,'Usunięty klient','Usunięty klient','Usunięty klient','Usunięty klient','000000000');
 INSERT INTO clients VALUES(clients_seq.NEXTVAL,'John','Cartembel','johncartembel@janosikooo.pl','Detroit,9268 Country Club Ave.','489628496');
 INSERT INTO clients VALUES(clients_seq.NEXTVAL,'Joao','Andraka','joaoandraka@gmail.com','Kanton,234 Haizhu','489142496');
 INSERT INTO clients VALUES(clients_seq.NEXTVAL,'Santiago','Fili','santiagofili@gmail.com','Sau Paulo,823 Juventus Ave ','48964296');
@@ -234,6 +239,7 @@ INSERT INTO clients VALUES(clients_seq.NEXTVAL,'Hyun-woo','Gunwii','hyun@gmail.c
 INSERT INTO clients VALUES(clients_seq.NEXTVAL,'Wojciech','Noah','wojciechnoah@gmail.com','Warszawa,ul.Warszawska 24','721264234');
 INSERT INTO clients VALUES(clients_seq.NEXTVAL,'Monika','Mohito','monikamohito@wnaszertv.pl','Kraków,ul.Wawelska 66','761234340');
 
+INSERT INTO providers VALUES(providers_seq.NEXTVAL,'Usunięty dostawca','Usunięty dostawca','Usunięty dostawca','000000000',0000000000,000000000);
 INSERT INTO providers VALUES(providers_seq.NEXTVAL,'Marcinspedition','Marcinsped@janosiko.pl','Detroit,9268 Country Club Ave.','489628496',3786749531,192594973);
 INSERT INTO providers VALUES(providers_seq.NEXTVAL,'Jupiter','Jupiter@gmail.com','Kanton,234 Haizhu','874542496',2917074287,511494475);
 INSERT INTO providers VALUES(providers_seq.NEXTVAL,'DHL','DHL@dhl.com','Warszawa,Mokotów 24 ','84264296',1155245903,278110658);
@@ -246,21 +252,300 @@ CREATE OR REPLACE VIEW salesView AS SELECT sales.id_sales, sales.id_employees, s
 CREATE OR REPLACE VIEW providesView AS SELECT provides.id_provides, provides.id_employees, provides.id_providers, provides.execution_date_provides, provides.provides_price, provides.status_provides, CONCAT(employees.name_employees ,CONCAT(' ', employees.surname_employees)) as SPRZEDAWCA, providers.name_providers FROM provides LEFT OUTER JOIN employees ON provides.id_employees = employees.id_employees LEFT OUTER JOIN providers ON provides.id_providers = providers.id_providers ORDER BY id_provides DESC;
 CREATE OR REPLACE VIEW stats AS SELECT (SELECT COUNT(*) FROM employees) as empl, (SELECT COUNT(*) FROM clients) as clnt, (SELECT COUNT(*) FROM items) as itct, (SELECT COUNT(*) FROM producers) as prdc, (SELECT COUNT(*) FROM providers) as prvd, (SELECT COUNT(*) FROM sales) as slsc, (SELECT SUM(quantity_sales_items) FROM sales_items) as sism, (SELECT SUM(sales_price) FROM sales) as salpr  FROM dual;
 CREATE OR REPLACE VIEW itemsToProvide AS SELECT ID_ITEMS, CONCAT(CONCAT(NAME_ITEMS, ' '), MODEL_ITEMS) as ITEM FROM items ORDER BY id_items;
---view
+CREATE OR REPLACE VIEW getItems AS SELECT id_items, name_items, model_items, quantity_items, price_items, name_producers FROM items JOIN producers ON items.id_producers = producers.id_producers ORDER BY items.id_items;
+CREATE OR REPLACE VIEW getEmployeeSales AS SELECT sales.id_sales, sales.id_employees, CONCAT(employees.name_employees, employees.surname_employees) as Sprzedawca, sales.id_clients, CONCAT(clients.name_clients, clients.surname_clients) as Klient, sales.EXECUTION_DATE_SALES, sales.SALES_PRICE, sales.status_sales FROM sales JOIN employees ON sales.id_employees = employees.id_employees JOIN clients ON sales.id_clients = clients.id_clients;
+CREATE OR REPLACE VIEW getEmployeeProvides AS SELECT provides.id_provides, provides.id_employees, CONCAT(employees.name_employees, employees.surname_employees) as Sprzedawca, providers.id_providers, providers.name_providers, provides.EXECUTION_DATE_PROVIDES, provides.PROVIDES_PRICE, provides.status_provides FROM provides JOIN employees ON provides.id_employees = employees.id_employees JOIN providers ON provides.id_providers = providers.id_providers;
+CREATE OR REPLACE VIEW getClientSales AS SELECT s.id_sales, s.id_employees, (e.name_employees || ' ' || e.surname_employees) as Sprzedawca, s.id_clients, (c.name_clients || ' ' || c.surname_clients) as Klient, s.EXECUTION_DATE_SALES, s.SALES_PRICE, s.status_sales FROM sales s JOIN employees e ON s.id_employees = e.id_employees JOIN clients c ON s.id_clients = c.id_clients;
+CREATE OR REPLACE VIEW getItemsToProducer AS SELECT items.id_items, CONCAT(items.name_items, CONCAT(' ', items.model_items)) as item, producers.name_producers FROM items JOIN producers ON items.id_producers = producers.id_producers;
+CREATE OR REPLACE VIEW getItemsToSale AS SELECT items.id_items, CONCAT(items.name_items, CONCAT(' ', items.model_items)) as item, sales_items.QUANTITY_SALES_ITEMS, producers.name_producers FROM items JOIN producers ON items.id_producers = producers.id_producers JOIN sales_items ON items.id_items = sales_items.id_items JOIN sales ON sales_items.id_sales = sales.id_sales;
+CREATE OR REPLACE VIEW getProvideItems AS SELECT items.id_items, CONCAT(items.name_items, CONCAT(' ', items.model_items)) as ITEM, provides_items.QUANTITY_PROVIDES_ITEMS, producers.name_producers FROM items JOIN producers ON items.id_producers = producers.id_producers JOIN provides_items ON items.id_items = provides_items.id_items JOIN provides ON provides_items.id_provides = provides.id_provides;
 
---cursor --w procedurach
---cursor
---cursor
---cursor
+create or replace TRIGGER checkitemsales
+BEFORE INSERT ON sales_items FOR EACH ROW
+	declare
+	itval NUMBER;
+	noitems exception;
+BEGIN
+	SELECT items.QUANTITY_ITEMS INTO itval FROM items WHERE items.id_items = :new.ID_ITEMS;
+	IF (itval - :new.QUANTITY_SALES_ITEMS) < 0 THEN
+		raise noitems;
+	END IF;
+END;
 
---trigger --na usuniecie pracownika admin_m/deleteEmployee
---trigger --na usuniecie klienta admin_m/deleteClient
---trigger --na usuniecie dostawcy admin_m/deleteProvider
+create or replace TRIGGER updateQuantity
+AFTER INSERT ON sales_items FOR EACH ROW
+BEGIN
+	UPDATE items SET quantity_items = quantity_items - :new.QUANTITY_SALES_ITEMS WHERE items.id_items = :new.ID_ITEMS;
+END;
 
---procedura do admin_m/doBuy
---procedura do admin_m/declineSale
---procedura do admin_m/deleteItem
---procedura do admin_m/deleteFeature
---procedura do admin_m/addItemToProvide
---procedura do admin_m/deleteItemFromProvide
---procedura do admin_m/declineProvide
+create or replace FUNCTION DOBUYFUNC(
+	iname IN clients.name_clients%type,
+	isurname IN clients.surname_clients%type,
+	iemail IN clients.email_clients%type,
+	iaddress IN clients.address_clients%type,
+	iphone IN clients.phone_number_clients%type,
+	basketPrice IN sales.sales_price%type,
+	itemsvalues IN VARCHAR
+) RETURN NUMBER
+	IS
+  	PRAGMA AUTONOMOUS_TRANSACTION;
+	rescntcl NUMBER(1);
+	resclid clients.id_clients%type;
+	salesid sales.id_sales%type;
+	itsid sales_items.id_items%type;
+	itsval sales_items.quantity_sales_items%type;
+	results NUMBER;
+BEGIN
+	results := 0;
+	IF iname IS NULL THEN
+		RAISE_APPLICATION_ERROR(-20001, 'Empty name');
+    RETURN results;
+	END IF;
+	IF isurname IS NULL THEN
+		RAISE_APPLICATION_ERROR(-20001, 'Empty surname');
+    RETURN results;
+	END IF;
+	IF iemail IS NULL THEN
+		RAISE_APPLICATION_ERROR(-20001, 'Empty email');
+    RETURN results;
+	END IF;
+	IF iaddress IS NULL THEN
+		RAISE_APPLICATION_ERROR(-20001, 'Empty address');
+    RETURN results;
+	END IF;
+	IF iphone IS NULL THEN
+		RAISE_APPLICATION_ERROR(-20001, 'Empty phone number');
+    RETURN results;
+	END IF;
+
+	SELECT count(clients.id_clients) INTO rescntcl FROM clients WHERE clients.name_clients = iname AND clients.surname_clients = isurname AND clients.email_clients = iemail AND clients.address_clients = iaddress AND clients.phone_number_clients = iphone;
+	IF (rescntcl = 0) THEN
+		INSERT INTO clients VALUES(clients_seq.NEXTVAL, iname, isurname, iemail, iaddress, iphone);
+	END IF;
+	SELECT id_clients INTO resclid FROM clients WHERE clients.name_clients = iname AND clients.surname_clients = isurname AND clients.email_clients = iemail AND clients.address_clients = iaddress AND clients.phone_number_clients = iphone;
+	IF (resclid > 0) THEN
+    dbms_output.put_line('Company code no.'||resclid);
+		INSERT INTO sales VALUES(sales_seq.NEXTVAL, NULL, resclid, NULL, basketPrice, 0);
+		SELECT max(sales.id_sales) INTO salesid FROM sales WHERE sales.id_clients = resclid AND sales.sales_price = basketPrice;
+		IF (salesid > 0) THEN
+			FOR i IN
+				(SELECT level,
+				trim(regexp_substr(itemsvalues, '[^;]+', 1, LEVEL)) str
+				FROM dual
+				CONNECT BY regexp_substr(itemsvalues , '[^;]+', 1, LEVEL) IS NOT NULL
+				)
+			LOOP
+		      SELECT regexp_substr(i.str, '[^,]+', 1, 1), regexp_substr(i.str, '[^,]+', 1, 2) INTO itsid,itsval FROM dual;
+		      INSERT INTO sales_items(id_sales, id_items, quantity_sales_items) VALUES(salesid, itsid, itsval);
+			END LOOP;
+			COMMIT;
+			results:=1;
+      RETURN results;
+		END IF;
+    RETURN results;
+	END IF;
+  RETURN results;
+END;
+
+CREATE OR REPLACE FUNCTION DECLINEPROVIDEFUNC(id IN provides.id_provides%type)
+RETURN NUMBER
+IS
+CURSOR declineprovidecursor IS
+SELECT PROVIDES_ITEMS.ID_ITEMS, PROVIDES_ITEMS.QUANTITY_PROVIDES_ITEMS FROM PROVIDES_ITEMS JOIN items ON items.id_items = provides_items.id_items WHERE PROVIDES_ITEMS.ID_PROVIDES = id;
+PRAGMA AUTONOMOUS_TRANSACTION;
+BEGIN
+ 	FOR i IN declineprovidecursor LOOP
+    EXIT WHEN declineprovidecursor%notfound;
+ 		UPDATE items SET QUANTITY_ITEMS = QUANTITY_ITEMS - i.QUANTITY_PROVIDES_ITEMS WHERE ID_ITEMS = i.ID_ITEMS;
+ 	END LOOP;
+ 	DELETE FROM PROVIDES_ITEMS WHERE ID_PROVIDES = id;
+ 	DELETE FROM provides WHERE id_provides = id;
+ 	COMMIT;
+ 	RETURN 1;
+ 	exception
+ 		WHEN OTHERS THEN
+ 			ROLLBACK;
+ 			RETURN 0;
+END;
+
+CREATE OR REPLACE FUNCTION DECLINESALEFUNC(id IN sales.id_sales%type)
+RETURN NUMBER
+IS CURSOR declinesalecursor IS
+SELECT id_items, QUANTITY_SALES_ITEMS from sales_items WHERE id_sales = id;
+PRAGMA AUTONOMOUS_TRANSACTION;
+BEGIN
+	FOR i IN declinesalecursor LOOP
+		UPDATE items SET QUANTITY_ITEMS = QUANTITY_ITEMS + i.QUANTITY_SALES_ITEMS WHERE id_items = i.ID_ITEMS;
+	END LOOP;
+	DELETE FROM sales_items WHERE id_sales = id;
+	DELETE FROM sales WHERE id_sales = id;
+	COMMIT;
+ 	RETURN 1;
+	exception
+ 		WHEN OTHERS THEN
+ 			ROLLBACK;
+ 			RETURN 0;
+END;
+
+create or replace TRIGGER DELETEFROMITFT
+BEFORE DELETE ON items FOR EACH ROW
+BEGIN
+	DELETE FROM ITEMS_FEATURES WHERE id_items = :old.id_items;
+END;
+
+CREATE OR REPLACE FUNCTION DELETEITEMFUNC(id IN items.id_items%type)
+RETURN NUMBER
+IS
+PRAGMA AUTONOMOUS_TRANSACTION;
+BEGIN
+	DELETE FROM items WHERE id_items = id;
+	COMMIT;
+ 	RETURN 1;
+	exception
+ 		WHEN OTHERS THEN
+ 			ROLLBACK;
+ 			RETURN 0;
+END;
+
+create or replace TRIGGER DELETEFTFROMITFT
+BEFORE DELETE ON features FOR EACH ROW
+BEGIN
+	DELETE FROM ITEMS_FEATURES WHERE id_features = :old.id_features;
+END;
+
+CREATE OR REPLACE FUNCTION DELETEFEATUREFUNC(id IN features.id_features%type)
+RETURN NUMBER
+IS
+PRAGMA AUTONOMOUS_TRANSACTION;
+BEGIN
+	DELETE FROM features WHERE id_features = id;
+	COMMIT;
+ 	RETURN 1;
+	exception
+ 		WHEN OTHERS THEN
+ 			ROLLBACK;
+ 			RETURN 0;
+END;
+
+create or replace TRIGGER UPDATEADDITEMTOPROVIDE
+AFTER INSERT ON provides_items FOR EACH ROW
+BEGIN
+	UPDATE items SET QUANTITY_ITEMS = QUANTITY_ITEMS + :new.QUANTITY_PROVIDES_ITEMS WHERE ID_ITEMS = :new.ID_ITEMS;
+END;
+
+CREATE OR REPLACE FUNCTION ADDITEMTOPROVIDEFUNC(id IN provides_items.id_provides%type, iditem IN items.id_items%type, val IN provides_items.QUANTITY_PROVIDES_ITEMS%type)
+RETURN NUMBER
+IS
+PRAGMA AUTONOMOUS_TRANSACTION;
+BEGIN
+	INSERT INTO provides_items VALUES(id, iditem, val);
+	COMMIT;
+ 	RETURN 1;
+	exception
+ 		WHEN OTHERS THEN
+ 			ROLLBACK;
+ 			RETURN 0;
+END;
+
+create or replace TRIGGER UPDATEDELETEITEMFROMPROVIDE
+BEFORE DELETE ON provides_items FOR EACH ROW
+BEGIN
+	UPDATE items SET QUANTITY_ITEMS = QUANTITY_ITEMS - :old.QUANTITY_PROVIDES_ITEMS WHERE ID_ITEMS = :old.ID_ITEMS;
+END;
+
+CREATE OR REPLACE FUNCTION DELETEITEMFROMPROVIDEFUNC(iditem IN PROVIDES_ITEMS.ID_ITEMS%type, idprovide IN provides_items.ID_PROVIDES%type)
+RETURN NUMBER
+IS
+PRAGMA AUTONOMOUS_TRANSACTION;
+BEGIN
+	DELETE FROM provides_items WHERE ID_ITEMS = iditem AND ID_PROVIDES = idprovide;
+	COMMIT;
+ 	RETURN 1;
+	exception
+ 		WHEN OTHERS THEN
+ 			ROLLBACK;
+ 			RETURN 0;
+END;
+
+
+CREATE OR REPLACE FUNCTION DELETEEMPLOYEEFUNC(id IN employees.id_employees%type)
+RETURN NUMBER
+IS
+CURSOR deleteemployeesalescursor IS SELECT s.id_sales FROM sales s JOIN employees ems ON s.id_employees = ems.id_employees WHERE ems.id_employees = id;
+CURSOR deleteemployeeprovidescursor IS SELECT p.id_provides FROM provides p JOIN employees emp ON p.id_employees = emp.id_employees WHERE emp.id_employees = id;
+PRAGMA AUTONOMOUS_TRANSACTION;
+BEGIN
+ 	FOR i IN deleteemployeesalescursor LOOP
+    EXIT WHEN deleteemployeesalescursor%notfound;
+ 		UPDATE sales SET id_employees = 1 WHERE id_sales = i.id_sales;
+ 	END LOOP;
+
+ 	FOR i IN deleteemployeeprovidescursor LOOP
+    EXIT WHEN deleteemployeeprovidescursor%notfound;
+ 		UPDATE provides SET id_employees = 1 WHERE id_provides = i.id_provides;
+ 	END LOOP;
+ 	DELETE FROM employees WHERE id_employees = id AND id_employees != 1;
+ 	COMMIT;
+ 	RETURN 1;
+ 	exception
+ 		WHEN OTHERS THEN
+ 			ROLLBACK;
+ 			RETURN 0;
+END;
+
+CREATE OR REPLACE FUNCTION DELETECLIENTFUNC(id IN clients.id_clients%type)
+RETURN NUMBER
+IS
+CURSOR deleteclientsalescursor IS SELECT s.id_sales FROM sales s JOIN clients cl ON s.id_clients = cl.id_clients WHERE s.id_clients = id;
+PRAGMA AUTONOMOUS_TRANSACTION;
+BEGIN
+ 	FOR i IN deleteclientsalescursor LOOP
+    EXIT WHEN deleteclientsalescursor%notfound;
+ 		UPDATE sales SET id_clients = 1 WHERE id_sales = i.id_sales;
+ 	END LOOP;
+ 	DELETE FROM clients WHERE id_clients = id AND id_clients != 1;
+ 	COMMIT;
+ 	RETURN 1;
+ 	exception
+ 		WHEN OTHERS THEN
+ 			ROLLBACK;
+ 			RETURN 0;
+END;
+
+CREATE OR REPLACE FUNCTION DELETEPRODUCERFUNC(id IN producers.id_producers%type)
+RETURN NUMBER
+IS
+CURSOR deleteproducercursor IS SELECT items.id_items from items JOIN producers ON items.id_producers = producers.id_producers WHERE items.id_producers = id;
+PRAGMA AUTONOMOUS_TRANSACTION;
+BEGIN
+ 	FOR i IN deleteproducercursor LOOP
+    EXIT WHEN deleteproducercursor%notfound;
+ 		UPDATE items SET id_producers = 1 WHERE id_items = i.id_items;
+ 	END LOOP;
+ 	DELETE FROM producers WHERE id_producers = id AND id_producers != 1;
+ 	COMMIT;
+ 	RETURN 1;
+ 	exception
+ 		WHEN OTHERS THEN
+ 			ROLLBACK;
+ 			RETURN 0;
+END;
+
+CREATE OR REPLACE FUNCTION DELETEPROVIDERFUNC(id IN providers.id_providers%type)
+RETURN NUMBER
+IS
+CURSOR deleteprovidercursor IS SELECT provides.id_provides from provides JOIN providers ON provides.id_providers = providers.id_providers WHERE provides.id_providers = id;
+PRAGMA AUTONOMOUS_TRANSACTION;
+BEGIN
+ 	FOR i IN deleteprovidercursor LOOP
+    EXIT WHEN deleteprovidercursor%notfound;
+ 		UPDATE provides SET id_providers = 1 WHERE id_provides = i.id_provides;
+ 	END LOOP;
+ 	DELETE FROM providers WHERE id_providers = id AND id_providers != 1;
+ 	COMMIT;
+ 	RETURN 1;
+ 	exception
+ 		WHEN OTHERS THEN
+ 			ROLLBACK;
+ 			RETURN 0;
+END;

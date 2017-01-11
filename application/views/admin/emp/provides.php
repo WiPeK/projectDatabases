@@ -1,5 +1,5 @@
 <?php if(isset($emp_pr)): ?>
-	<?php if(isset($emp_pr[0]->SPRZEDAWCA)): ?><h2>Sprzedaże pracownika <?php echo $emp_pr[0]->SPRZEDAWCA; ?></h2><?php endif; ?>
+	<?php if(isset($emp_pr[0]->SPRZEDAWCA)): ?><h2>Odebrane dostawy pracownika <?php echo $emp_pr[0]->SPRZEDAWCA; ?></h2><?php endif; ?>
 	<div class="table-responsive">
         <table class="table table-striped">
 	        <thead>

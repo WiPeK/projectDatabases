@@ -15,7 +15,7 @@
 			<tbody>
 				<?php foreach ($emp_sales as $sal): ?>
 					<tr>
-						<td><a href="<?php echo site_url('admin/sales/show/') . $sal->ID_SALES; ?> "></a><?php echo $sal->ID_SALES; ?></td>
+						<td><a href="<?php echo site_url('admin/sales/showItems/') . $sal->ID_SALES; ?> "><?php echo $sal->ID_SALES; ?></a></td>
 						<td><a href="<?php echo site_url('admin/employees/edit/') . $sal->ID_EMPLOYEES; ?> "></a><?php echo $sal->SPRZEDAWCA; ?></td>
 						<td><?php echo $sal->KLIENT; ?></td>
 						<td><?php echo $sal->EXECUTION_DATE_SALES; ?></td>

@@ -278,7 +278,7 @@ class Admin_m extends CI_Model {
 
 	public function getItems()
 	{
-		$query = $this->db->query("SELECT * FROM getItems");
+		$query = $this->db->query("SELECT items.*, producers.* FROM items JOIN producers ON items.id_producers = producers.id_producers ORDER BY items.id_items");
 		return $query->result();
 	}
 
@@ -296,56 +296,56 @@ class Admin_m extends CI_Model {
 
 	public function getProvide($id)
 	{
-		$query = $this->db->query("SELECT * FROM providesView WHERE id_provides = $id");
+		$query = $this->db->query("SELECT provides.id_provides, provides.id_employees, provides.id_providers, provides.execution_date_provides, provides.provides_price, provides.status_provides, CONCAT(employees.name_employees ,CONCAT(' ', employees.surname_employees)) as SPRZEDAWCA, providers.name_providers FROM provides LEFT OUTER JOIN employees ON provides.id_employees = employees.id_employees LEFT OUTER JOIN providers ON provides.id_providers = providers.id_providers WHERE id_provides = $id ORDER BY id_provides DESC");
 		return $query->row();
 
 	}
 
 	public function getItem($id)
 	{
-		$query = $this->db->query("SELECT * FROM item_relation WHERE id_items = $id");
+		$query = $this->db->query("SELECT items.id_items, items.name_items, items.model_items, items.quantity_items, items.price_items, items.id_producers, producers.name_producers, LISTAGG(CONCAT(CONCAT(features.id_features, '>'),CONCAT(CONCAT(features.name_features, '>'), items_features.value)), '; ') WITHIN GROUP (ORDER BY features.name_features) as ftrs FROM items LEFT OUTER JOIN items_features ON items.id_items = items_features.id_items LEFT OUTER JOIN features ON items_features.id_features = features.id_features LEFT OUTER JOIN producers ON items.id_producers = producers.id_producers WHERE items.id_items = $id GROUP BY items.id_items, items.name_items, items.model_items, items.quantity_items, items.price_items, items.id_producers, producers.name_producers");
 		return $query->row();
 	}
 
 	public function getEmployeeSales($id)
 	{
-		$query = $this->db->query("SELECT * FROM getEmployeeSales WHERE id_employees = $id");
+		$query = $this->db->query("SELECT sales.id_sales, sales.id_employees, CONCAT(employees.name_employees, employees.surname_employees) as Sprzedawca, sales.id_clients, CONCAT(clients.name_clients, clients.surname_clients) as Klient, sales.EXECUTION_DATE_SALES, sales.SALES_PRICE, sales.status_sales FROM sales JOIN employees ON sales.id_employees = employees.id_employees JOIN clients ON sales.id_clients = clients.id_clients WHERE sales.id_employees = $id");
 		return $query->result();
 	}
 
 	public function getEmployeeProvides($id)
 	{
-		$query = $this->db->query("SELECT * FROM getEmployeeProvides WHERE id_employees = $id");
+		$query = $this->db->query("SELECT provides.id_provides, provides.id_employees, CONCAT(employees.name_employees, employees.surname_employees) as Sprzedawca, providers.id_providers, providers.name_providers, provides.EXECUTION_DATE_PROVIDES, provides.PROVIDES_PRICE, provides.status_provides FROM provides JOIN employees ON provides.id_employees = employees.id_employees JOIN providers ON provides.id_providers = providers.id_providers WHERE provides.id_employees = $id");
 		return $query->result();
 	}
 
 	public function getProviderProvides($id)
 	{
-		$query = $this->db->query("SELECT * FROM getEmployeeProvides WHERE id_providers = $id");
+		$query = $this->db->query("SELECT provides.id_provides, provides.id_employees, CONCAT(employees.name_employees, employees.surname_employees) as Sprzedawca, providers.id_providers, providers.name_providers, provides.EXECUTION_DATE_PROVIDES, provides.PROVIDES_PRICE, provides.status_provides FROM provides JOIN employees ON provides.id_employees = employees.id_employees JOIN providers ON provides.id_providers = providers.id_providers WHERE provides.id_providers = $id");
 		return $query->result();
 	}
 
 	public function getClientSales($id)
 	{
-		$query = $this->db->query("SELECT * FROM getClientSales WHERE id_clients = $id");
+		$query = $this->db->query("SELECT sales.id_sales, sales.id_employees, CONCAT(employees.name_employees, employees.surname_employees) as Sprzedawca, sales.id_clients, CONCAT(clients.name_clients, clients.surname_clients) as Klient, sales.EXECUTION_DATE_SALES, sales.SALES_PRICE, sales.status_sales FROM sales JOIN employees ON sales.id_employees = employees.id_employees JOIN clients ON sales.id_clients = clients.id_clients WHERE sales.id_clients = $id");
 		return $query->result();
 	}
 
 	public function getItemsToProducer($id)
 	{
-		$query = $this->db->query("SELECT * FROM getItemsToProducer WHERE items.id_producers = $id");
+		$query = $this->db->query("SELECT items.id_items, CONCAT(items.name_items, CONCAT(' ', items.model_items)) as item, producers.name_producers FROM items JOIN producers ON items.id_producers = producers.id_producers WHERE items.id_producers = $id");
 		return $query->result();
 	}
 
 	public function getItemsToSale($id)
 	{
-		$query = $this->db->query("SELECT * FROM getItemsToSale WHERE sales.id_sales = $id");
+		$query = $this->db->query("SELECT items.id_items, CONCAT(items.name_items, CONCAT(' ', items.model_items)) as item, sales_items.QUANTITY_SALES_ITEMS, producers.name_producers FROM items JOIN producers ON items.id_producers = producers.id_producers JOIN sales_items ON items.id_items = sales_items.id_items JOIN sales ON sales_items.id_sales = sales.id_sales WHERE sales.id_sales = $id");
 		return $query->result();
 	}
 
 	public function getProvideItems($id)
 	{
-		$query = $this->db->query("SELECT * FROM getProvideItems WHERE provides.id_provides = $id");
+		$query = $this->db->query("SELECT items.id_items, CONCAT(items.name_items, CONCAT(' ', items.model_items)) as ITEM, provides_items.QUANTITY_PROVIDES_ITEMS, producers.name_producers FROM items JOIN producers ON items.id_producers = producers.id_producers JOIN provides_items ON items.id_items = provides_items.id_items JOIN provides ON provides_items.id_provides = provides.id_provides WHERE provides.id_provides = $id");
 		return $query->result();
 	}
 
@@ -429,38 +429,26 @@ class Admin_m extends CI_Model {
 
 	public function deleteEmployee($id)
 	{
-		$query = $this->db->query("SELECT DELETEEMPLOYEEFUNC($id) as res from dual");
-		if($query->row('RES') == "1")
-			return true;
-		else
-			return false;
+		$query = $this->db->query("DELETE FROM employees WHERE id_employees = $id");
+		return $this->db->affected_rows();
 	}
 
 	public function deleteClient($id)
 	{
-		$query = $this->db->query("SELECT DELETECLIENTFUNC($id) as res from dual");
-		if($query->row('RES') == "1")
-			return true;
-		else
-			return false;
+		$query = $this->db->query("DELETE FROM clients WHERE id_clients = $id");
+		return $this->db->affected_rows();
 	}
 
 	public function deleteProducer($id)
 	{
-		$query = $this->db->query("SELECT DELETEPRODUCERFUNC($id) as res from dual");
-		if($query->row('RES') == "1")
-			return true;
-		else
-			return false;
+		$query = $this->db->query("DELETE FROM producers WHERE id_producers = $id");
+		return $this->db->affected_rows();
 	}
 
 	public function deleteProvider($id)
 	{
-		$query = $this->db->query("SELECT DELETEPROVIDERFUNC($id) as res from dual");
-		if($query->row('RES') == "1")
-			return true;
-		else
-			return false;
+		$query = $this->db->query("DELETE FROM providers WHERE id_providers = $id");
+		return $this->db->affected_rows();
 	}
 
 	public function addProducer()
@@ -479,11 +467,16 @@ class Admin_m extends CI_Model {
 
 	public function declineSale($id)
 	{
-		$query = $this->db->query("SELECT DECLINESALEFUNC($id) as res from dual");
-		if($query->row('RES') == "1")
-			return true;
-		else
-			return false;
+		$query = $this->db->query("SELECT id_items, QUANTITY_SALES_ITEMS from sales_items WHERE id_sales = $id");
+		foreach ($query->result() as $item) {
+			$qry = $this->db->query("UPDATE items SET QUANTITY_ITEMS = QUANTITY_ITEMS + $item->QUANTITY_SALES_ITEMS WHERE id_items = $item->ID_ITEMS");
+			if(!$this->db->affected_rows()) return false;
+		}
+		$queryDel = $this->db->query("DELETE FROM sales_items WHERE id_sales = $id");
+		if(!$this->db->affected_rows()) return false;
+		$queryDelSales = $this->db->query("DELETE FROM sales WHERE id_sales = $id");
+		if(!$this->db->affected_rows()) return false;
+		return true;
 	}
 
 	public function addParam($id)
@@ -502,11 +495,11 @@ class Admin_m extends CI_Model {
 
 	public function deleteItem($id)
 	{
-		$query = $this->db->query("SELECT DELETEITEMFUNC($id) as RES FROM dual");
-		if($query->row('RES') == "1")
-			return true;
-		else
-			return false;
+		$this->db->query("DELETE FROM ITEMS_FEATURES WHERE id_items = $id");
+		if(!$this->db->affected_rows()) return false;
+		$this->db->query("DELETE FROM items WHERE id_items = $id");
+		if(!$this->db->affected_rows()) return false;
+		return true;
 	}
 
 	public function addFeature()
@@ -518,11 +511,11 @@ class Admin_m extends CI_Model {
 
 	public function deleteFeature($id)
 	{
-		$query = $this->db->query("SELECT DELETEFEATUREFUNC($id) as RES FROM dual");
-		if($query->row('RES') == "1")
-			return true;
-		else
-			return false;
+		$this->db->query("DELETE FROM ITEMS_FEATURES WHERE id_features = $id");
+		if(!$this->db->affected_rows()) return false;
+		$this->db->query("DELETE FROM features WHERE id_features = $id");
+		if(!$this->db->affected_rows()) return false;
+		return true;
 	}
 
 	public function addNewProvide()
@@ -537,20 +530,20 @@ class Admin_m extends CI_Model {
 	{
 		$id_item = $this->input->post('item');
 		$val_item = $this->input->post('itqn');
-		$query = $this->db->query("SELECT ADDITEMTOPROVIDEFUNC($id, $id_item, $val_item) as res from dual");
-		if($query->row('RES') == "1")
-			return true;
-		else
-			return false;
+		$this->db->query("INSERT INTO provides_items VALUES($id, $id_item, $val_item)");
+		if(!$this->db->affected_rows()) return false;
+		$this->db->query("UPDATE items SET QUANTITY_ITEMS = QUANTITY_ITEMS + $val_item WHERE ID_ITEMS = $id_item");
+		if(!$this->db->affected_rows()) return false;
+		return true;
 	}
 
 	public function deleteItemFromProvide($idItem, $idProvide)
 	{
-		$query = $this->db->query("SELECT DELETEITEMFROMPROVIDEFUNC($idItem, $idProvide) as res from dual");
-		if($query->row('RES') == "1")
-			return true;
-		else
-			return false;
+		$this->db->query("UPDATE items SET QUANTITY_ITEMS = QUANTITY_ITEMS - (SELECT QUANTITY_PROVIDES_ITEMS FROM PROVIDES_ITEMS WHERE ID_ITEMS = $idItem AND ID_PROVIDES = $idProvide) WHERE ID_ITEMS = $idItem");
+		if(!$this->db->affected_rows()) return false;
+		$this->db->query("DELETE FROM provides_items WHERE ID_ITEMS = $idItem AND ID_PROVIDES = $idProvide");
+		if(!$this->db->affected_rows()) return false;
+		return true;
 	}
 
 	public function closeProvide($id)
@@ -567,6 +560,20 @@ class Admin_m extends CI_Model {
 		else
 			return false;
 	}
+	// $query = $this->db->query("SELECT PROVIDES_ITEMS.ID_ITEMS, QUANTITY_PROVIDES_ITEMS FROM PROVIDES_ITEMS JOIN items ON items.id_items = provides_items.id_items WHERE ID_PROVIDES = $id");
+	// if(count($query->result()))
+	// {
+	// 	foreach ($query->result() as $row) {
+	// 		$this->db->query("UPDATE items SET QUANTITY_ITEMS = QUANTITY_ITEMS - $row->QUANTITY_PROVIDES_ITEMS WHERE ID_ITEMS = $row->ID_ITEMS");
+	// 		if(!$this->db->affected_rows()) return false;
+	// 	}
+	// }
+
+	// $this->db->query("DELETE FROM PROVIDES_ITEMS WHERE ID_PROVIDES = $id");
+	// if(!$this->db->affected_rows()) return false;
+	// $this->db->query("DELETE FROM provides WHERE id_provides = $id");
+	// if(!$this->db->affected_rows()) return false;
+	// return true;
 }
 
 /* End of file admin_m.php */
