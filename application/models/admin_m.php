@@ -195,23 +195,33 @@ class Admin_m extends CI_Model {
 	{
 		$query = $this->db->query("SELECT * FROM producers ORDER BY id_producers");
 
-		$array = array(
-			0 => array(
-				'ID_PRODUCERS' => 0,
-				'NAME_PRODUCERS' => 'Brak'
-			)
-		);
-		$i = 1;
+		$array = array();
+
 		if (count($query->result())) {
 			foreach ($query->result() as $row) {
-				$array[$i] = array(
-					'ID_PRODUCERS' => $row->ID_PRODUCERS,
-					'NAME_PRODUCERS' => $row->NAME_PRODUCERS
-				);
-				$i++;
+				$array[$row->ID_PRODUCERS] = $row->NAME_PRODUCERS;
 			}
 		}
+
+		// $array = array(
+		// 	0 => array(
+		// 		'ID_PRODUCERS' => 0,
+		// 		'NAME_PRODUCERS' => 'Brak'
+		// 	)
+		// );
+		// $i = 1;
+		// if (count($query->result())) {
+		// 	foreach ($query->result() as $row) {
+		// 		$array[$i] = array(
+		// 			'ID_PRODUCERS' => $row->ID_PRODUCERS,
+		// 			'NAME_PRODUCERS' => $row->NAME_PRODUCERS
+		// 		);
+		// 		$i++;
+		// 	}
+		// }
 		return $array;
+
+
 	}
 
 	public function getProvidersToProvide()

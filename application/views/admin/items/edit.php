@@ -52,8 +52,8 @@
 		<div class="form-group">
 	    	<label for="producer">Producent</label>
 	    	<select name="producer" class="custom-select" required>
-		    	<?php foreach ($producers as $prdc): ?>
-					<option <?php echo ($prdc['ID_PRODUCERS'] == $item->ID_PRODUCERS)? "selected" : ""; ?> value="<?php echo $prdc['ID_PRODUCERS']; ?>"><?php echo $prdc['NAME_PRODUCERS']; ?></option>
+		    	<?php foreach ($producers as $prdc => $val): ?>
+					<option <?php echo ($prdc == $item->ID_PRODUCERS)? "selected" : ""; ?> value="<?php echo $prdc; ?>"><?php echo $val; ?></option>
 		    	<?php endforeach ?>
 	    	</select>
 	    	<?php if(form_error('producer')) : ?>

@@ -247,7 +247,7 @@ INSERT INTO providers VALUES(providers_seq.NEXTVAL,'DPD','DPDhelp@dpd.com','Krak
 INSERT INTO providers VALUES(providers_seq.NEXTVAL,'UPS','UPSclient@ups.com','Warszawa,ul.Warszawska 24','721264234',2983592145,579895250);
 INSERT INTO providers VALUES(providers_seq.NEXTVAL,'Poczta Polska','pocztapolska@pp.pl','Kraków,ul.Wawelska 66','761314340',1759887417,418478100);
 
-CREATE OR REPLACE VIEW item_relation AS SELECT items.id_items, items.name_items, items.model_items, items.quantity_items, items.price_items, producers.name_producers, LISTAGG(CONCAT(CONCAT(features.name_features, ' '), items_features.value), '; ') WITHIN GROUP (ORDER BY features.name_features) "ftrs" FROM items JOIN items_features ON items.id_items = items_features.id_items JOIN features ON items_features.id_features = features.id_features JOIN producers ON items.id_producers = producers.id_producers GROUP BY items.id_items, items.name_items, items.model_items, items.quantity_items, items.price_items, producers.name_producers;
+CREATE OR REPLACE VIEW item_relation AS SELECT items.id_items, items.name_items, items.model_items, items.quantity_items, items.price_items, items.id_producers, producers.name_producers, LISTAGG(CONCAT(CONCAT(features.name_features, ' '), items_features.value), '; ') WITHIN GROUP (ORDER BY features.name_features) "ftrs" FROM items JOIN items_features ON items.id_items = items_features.id_items JOIN features ON items_features.id_features = features.id_features JOIN producers ON items.id_producers = producers.id_producers GROUP BY items.id_items, items.name_items, items.model_items, items.quantity_items, items.price_items, items.id_producers, producers.name_producers;
 CREATE OR REPLACE VIEW salesView AS SELECT sales.id_sales, sales.id_employees, sales.id_clients, sales.execution_date_sales, sales.sales_price, sales.status_sales, CONCAT(employees.name_employees ,CONCAT(' ', employees.surname_employees)) as SPRZEDAWCA, CONCAT(clients.name_clients ,CONCAT(' ', clients.surname_clients)) as KLIENT FROM sales LEFT OUTER JOIN employees ON sales.id_employees = employees.id_employees LEFT OUTER JOIN clients ON sales.id_clients = clients.id_clients ORDER BY id_sales DESC;
 CREATE OR REPLACE VIEW providesView AS SELECT provides.id_provides, provides.id_employees, provides.id_providers, provides.execution_date_provides, provides.provides_price, provides.status_provides, CONCAT(employees.name_employees ,CONCAT(' ', employees.surname_employees)) as SPRZEDAWCA, providers.name_providers FROM provides LEFT OUTER JOIN employees ON provides.id_employees = employees.id_employees LEFT OUTER JOIN providers ON provides.id_providers = providers.id_providers ORDER BY id_provides DESC;
 CREATE OR REPLACE VIEW stats AS SELECT (SELECT COUNT(*) FROM employees) as empl, (SELECT COUNT(*) FROM clients) as clnt, (SELECT COUNT(*) FROM items) as itct, (SELECT COUNT(*) FROM producers) as prdc, (SELECT COUNT(*) FROM providers) as prvd, (SELECT COUNT(*) FROM sales) as slsc, (SELECT SUM(quantity_sales_items) FROM sales_items) as sism, (SELECT SUM(sales_price) FROM sales) as salpr  FROM dual;
@@ -294,28 +294,26 @@ create or replace FUNCTION DOBUYFUNC(
 	salesid sales.id_sales%type;
 	itsid sales_items.id_items%type;
 	itsval sales_items.quantity_sales_items%type;
-	results NUMBER;
 BEGIN
-	results := 0;
 	IF iname IS NULL THEN
 		RAISE_APPLICATION_ERROR(-20001, 'Empty name');
-    RETURN results;
+    RETURN 0;
 	END IF;
 	IF isurname IS NULL THEN
 		RAISE_APPLICATION_ERROR(-20001, 'Empty surname');
-    RETURN results;
+    RETURN 0;
 	END IF;
 	IF iemail IS NULL THEN
 		RAISE_APPLICATION_ERROR(-20001, 'Empty email');
-    RETURN results;
+    RETURN 0;
 	END IF;
 	IF iaddress IS NULL THEN
 		RAISE_APPLICATION_ERROR(-20001, 'Empty address');
-    RETURN results;
+    RETURN 0;
 	END IF;
 	IF iphone IS NULL THEN
 		RAISE_APPLICATION_ERROR(-20001, 'Empty phone number');
-    RETURN results;
+    RETURN 0;
 	END IF;
 
 	SELECT count(clients.id_clients) INTO rescntcl FROM clients WHERE clients.name_clients = iname AND clients.surname_clients = isurname AND clients.email_clients = iemail AND clients.address_clients = iaddress AND clients.phone_number_clients = iphone;
@@ -339,12 +337,11 @@ BEGIN
 		      INSERT INTO sales_items(id_sales, id_items, quantity_sales_items) VALUES(salesid, itsid, itsval);
 			END LOOP;
 			COMMIT;
-			results:=1;
-      RETURN results;
+      RETURN 1;
 		END IF;
-    RETURN results;
+    RETURN 0;
 	END IF;
-  RETURN results;
+  RETURN 0;
 END;
 
 CREATE OR REPLACE FUNCTION DECLINEPROVIDEFUNC(id IN provides.id_provides%type)
