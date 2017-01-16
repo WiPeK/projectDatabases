@@ -203,22 +203,6 @@ class Admin_m extends CI_Model {
 			}
 		}
 
-		// $array = array(
-		// 	0 => array(
-		// 		'ID_PRODUCERS' => 0,
-		// 		'NAME_PRODUCERS' => 'Brak'
-		// 	)
-		// );
-		// $i = 1;
-		// if (count($query->result())) {
-		// 	foreach ($query->result() as $row) {
-		// 		$array[$i] = array(
-		// 			'ID_PRODUCERS' => $row->ID_PRODUCERS,
-		// 			'NAME_PRODUCERS' => $row->NAME_PRODUCERS
-		// 		);
-		// 		$i++;
-		// 	}
-		// }
 		return $array;
 
 
@@ -242,9 +226,7 @@ class Admin_m extends CI_Model {
 	{
 		$query = $this->db->query("SELECT * FROM features ORDER BY id_features");
 
-		$array = array(
-			'0' => 'Brak parametrów'
-		);
+		$array = array();
 
 		if (count($query->result())) {
 			foreach ($query->result() as $row) {
@@ -288,7 +270,7 @@ class Admin_m extends CI_Model {
 
 	public function getItems()
 	{
-		$query = $this->db->query("SELECT * FROM getItems");
+		$query = $this->db->query("SELECT * FROM getItems WHERE id_items > 1");
 		return $query->result();
 	}
 
@@ -313,7 +295,7 @@ class Admin_m extends CI_Model {
 
 	public function getItem($id)
 	{
-		$query = $this->db->query("SELECT * FROM item_relation WHERE id_items = $id");
+		$query = $this->db->query("SELECT * FROM item_relation_edit WHERE id_items = $id");
 		return $query->row();
 	}
 
@@ -343,7 +325,7 @@ class Admin_m extends CI_Model {
 
 	public function getItemsToProducer($id)
 	{
-		$query = $this->db->query("SELECT * FROM getItemsToProducer WHERE items.id_producers = $id");
+		$query = $this->db->query("SELECT i.id_items, CONCAT(i.name_items, CONCAT(' ', i.model_items)) as item, p.name_producers FROM items i JOIN producers p ON i.id_producers = p.id_producers WHERE i.id_producers = $id AND id_items > 1");
 		return $query->result();
 	}
 
@@ -355,7 +337,7 @@ class Admin_m extends CI_Model {
 
 	public function getProvideItems($id)
 	{
-		$query = $this->db->query("SELECT * FROM getProvideItems WHERE provides.id_provides = $id");
+		$query = $this->db->query("SELECT items.id_items, CONCAT(items.name_items, CONCAT(' ', items.model_items)) as ITEM, provides_items.QUANTITY_PROVIDES_ITEMS, producers.name_producers FROM items JOIN producers ON items.id_producers = producers.id_producers JOIN provides_items ON items.id_items = provides_items.id_items JOIN provides ON provides_items.id_provides = provides.id_provides WHERE provides.id_provides = $id");
 		return $query->result();
 	}
 
@@ -368,8 +350,11 @@ class Admin_m extends CI_Model {
 		$phone = $this->input->post('phone');
 		$pass = $this->input->post('password');
 		if(empty($pass)) return false;
-		$query = $this->db->query("INSERT INTO employees VALUES(employees_seq.NEXTVAL, '$name', '$surname', '$email', DBMS_OBFUSCATION_TOOLKIT.md5 (input => UTL_RAW.cast_to_raw('$pass')), '$address', '$phone')");
-		return $this->db->affected_rows();
+		$query = $this->db->query("SELECT IINSERTEMPLOYEES('$name', '$surname', '$email', '$pass', '$address', '$phone') AS RES FROM dual");
+		if($query->row('RES') == "1")
+			return true;
+		else
+			return false;
 	}
 
 	public function updateEmployee($id)

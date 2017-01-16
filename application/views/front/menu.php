@@ -12,6 +12,9 @@
       <a class="nav-link" href="<?php echo site_url('home/basket'); ?>">Koszyk</a>
     </li>
   <?php endif; ?>
+  <li class="nav-item">
+      <a class="nav-link" href="<?php echo site_url('admin/admin'); ?>">Panel administratora</a>
+    </li>
   </ul>
   <?php if(!isset($_SESSION['logged'])): ?>
     <form action="<?php echo site_url('home/login'); ?>" method="post" accept-charset="utf-8" class="form-inline float-xs-right">

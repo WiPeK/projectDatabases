@@ -232,12 +232,6 @@ INSERT INTO employees VALUES(employees_seq.NEXTVAL,'Wojciech','Tokaj','wojciecht
 INSERT INTO employees VALUES(employees_seq.NEXTVAL,'Monika','Mohito','monikamohito@wnaszertv.pl',DBMS_OBFUSCATION_TOOLKIT.md5 (input => UTL_RAW.cast_to_raw(12345)),'Kraków,ul.Wawelska 66','761234340');
 
 INSERT INTO clients VALUES(clients_seq.NEXTVAL,'Usunięty klient','Usunięty klient','Usunięty klient','Usunięty klient','000000000');
-INSERT INTO clients VALUES(clients_seq.NEXTVAL,'John','Cartembel','johncartembel@janosikooo.pl','Detroit,9268 Country Club Ave.','489628496');
-INSERT INTO clients VALUES(clients_seq.NEXTVAL,'Joao','Andraka','joaoandraka@gmail.com','Kanton,234 Haizhu','489142496');
-INSERT INTO clients VALUES(clients_seq.NEXTVAL,'Santiago','Fili','santiagofili@gmail.com','Sau Paulo,823 Juventus Ave ','48964296');
-INSERT INTO clients VALUES(clients_seq.NEXTVAL,'Hyun-woo','Gunwii','hyun@gmail.com','Kraków,ul.Wieliczkowa 21','489228496');
-INSERT INTO clients VALUES(clients_seq.NEXTVAL,'Wojciech','Noah','wojciechnoah@gmail.com','Warszawa,ul.Warszawska 24','721264234');
-INSERT INTO clients VALUES(clients_seq.NEXTVAL,'Monika','Mohito','monikamohito@wnaszertv.pl','Kraków,ul.Wawelska 66','761234340');
 
 INSERT INTO providers VALUES(providers_seq.NEXTVAL,'Usunięty dostawca','Usunięty dostawca','Usunięty dostawca','000000000',0000000000,000000000);
 INSERT INTO providers VALUES(providers_seq.NEXTVAL,'Marcinspedition','Marcinsped@janosiko.pl','Detroit,9268 Country Club Ave.','489628496',3786749531,192594973);
@@ -248,6 +242,7 @@ INSERT INTO providers VALUES(providers_seq.NEXTVAL,'UPS','UPSclient@ups.com','Wa
 INSERT INTO providers VALUES(providers_seq.NEXTVAL,'Poczta Polska','pocztapolska@pp.pl','Kraków,ul.Wawelska 66','761314340',1759887417,418478100);
 
 CREATE OR REPLACE VIEW item_relation AS SELECT items.id_items, items.name_items, items.model_items, items.quantity_items, items.price_items, items.id_producers, producers.name_producers, LISTAGG(CONCAT(CONCAT(features.name_features, ' '), items_features.value), '; ') WITHIN GROUP (ORDER BY features.name_features) "ftrs" FROM items JOIN items_features ON items.id_items = items_features.id_items JOIN features ON items_features.id_features = features.id_features JOIN producers ON items.id_producers = producers.id_producers GROUP BY items.id_items, items.name_items, items.model_items, items.quantity_items, items.price_items, items.id_producers, producers.name_producers;
+CREATE OR REPLACE VIEW item_relation_edit AS SELECT items.id_items, items.name_items, items.model_items, items.quantity_items, items.price_items, items.id_producers, producers.name_producers, LISTAGG(CONCAT(CONCAT(features.id_features, '>'),CONCAT(CONCAT(features.name_features, '>'), items_features.value)), '; ') WITHIN GROUP (ORDER BY features.name_features) as ftrs FROM items LEFT OUTER JOIN items_features ON items.id_items = items_features.id_items LEFT OUTER JOIN features ON items_features.id_features = features.id_features LEFT OUTER JOIN producers ON items.id_producers = producers.id_producers GROUP BY items.id_items, items.name_items, items.model_items, items.quantity_items, items.price_items, items.id_producers, producers.name_producers;
 CREATE OR REPLACE VIEW salesView AS SELECT sales.id_sales, sales.id_employees, sales.id_clients, sales.execution_date_sales, sales.sales_price, sales.status_sales, CONCAT(employees.name_employees ,CONCAT(' ', employees.surname_employees)) as SPRZEDAWCA, CONCAT(clients.name_clients ,CONCAT(' ', clients.surname_clients)) as KLIENT FROM sales LEFT OUTER JOIN employees ON sales.id_employees = employees.id_employees LEFT OUTER JOIN clients ON sales.id_clients = clients.id_clients ORDER BY id_sales DESC;
 CREATE OR REPLACE VIEW providesView AS SELECT provides.id_provides, provides.id_employees, provides.id_providers, provides.execution_date_provides, provides.provides_price, provides.status_provides, CONCAT(employees.name_employees ,CONCAT(' ', employees.surname_employees)) as SPRZEDAWCA, providers.name_providers FROM provides LEFT OUTER JOIN employees ON provides.id_employees = employees.id_employees LEFT OUTER JOIN providers ON provides.id_providers = providers.id_providers ORDER BY id_provides DESC;
 CREATE OR REPLACE VIEW stats AS SELECT (SELECT COUNT(*) FROM employees) as empl, (SELECT COUNT(*) FROM clients) as clnt, (SELECT COUNT(*) FROM items) as itct, (SELECT COUNT(*) FROM producers) as prdc, (SELECT COUNT(*) FROM providers) as prvd, (SELECT COUNT(*) FROM sales) as slsc, (SELECT SUM(quantity_sales_items) FROM sales_items) as sism, (SELECT SUM(sales_price) FROM sales) as salpr  FROM dual;
@@ -256,7 +251,7 @@ CREATE OR REPLACE VIEW getItems AS SELECT id_items, name_items, model_items, qua
 CREATE OR REPLACE VIEW getEmployeeSales AS SELECT sales.id_sales, sales.id_employees, CONCAT(employees.name_employees, employees.surname_employees) as Sprzedawca, sales.id_clients, CONCAT(clients.name_clients, clients.surname_clients) as Klient, sales.EXECUTION_DATE_SALES, sales.SALES_PRICE, sales.status_sales FROM sales JOIN employees ON sales.id_employees = employees.id_employees JOIN clients ON sales.id_clients = clients.id_clients;
 CREATE OR REPLACE VIEW getEmployeeProvides AS SELECT provides.id_provides, provides.id_employees, CONCAT(employees.name_employees, employees.surname_employees) as Sprzedawca, providers.id_providers, providers.name_providers, provides.EXECUTION_DATE_PROVIDES, provides.PROVIDES_PRICE, provides.status_provides FROM provides JOIN employees ON provides.id_employees = employees.id_employees JOIN providers ON provides.id_providers = providers.id_providers;
 CREATE OR REPLACE VIEW getClientSales AS SELECT s.id_sales, s.id_employees, (e.name_employees || ' ' || e.surname_employees) as Sprzedawca, s.id_clients, (c.name_clients || ' ' || c.surname_clients) as Klient, s.EXECUTION_DATE_SALES, s.SALES_PRICE, s.status_sales FROM sales s JOIN employees e ON s.id_employees = e.id_employees JOIN clients c ON s.id_clients = c.id_clients;
-CREATE OR REPLACE VIEW getItemsToProducer AS SELECT items.id_items, CONCAT(items.name_items, CONCAT(' ', items.model_items)) as item, producers.name_producers FROM items JOIN producers ON items.id_producers = producers.id_producers;
+CREATE OR REPLACE VIEW getItemsToProducer AS SELECT i.id_items, CONCAT(i.name_items, CONCAT(' ', i.model_items)) as item, p.name_producers FROM items i JOIN producers p ON i.id_producers = p.id_producers;
 CREATE OR REPLACE VIEW getItemsToSale AS SELECT items.id_items, CONCAT(items.name_items, CONCAT(' ', items.model_items)) as item, sales_items.QUANTITY_SALES_ITEMS, producers.name_producers FROM items JOIN producers ON items.id_producers = producers.id_producers JOIN sales_items ON items.id_items = sales_items.id_items JOIN sales ON sales_items.id_sales = sales.id_sales;
 CREATE OR REPLACE VIEW getProvideItems AS SELECT items.id_items, CONCAT(items.name_items, CONCAT(' ', items.model_items)) as ITEM, provides_items.QUANTITY_PROVIDES_ITEMS, producers.name_producers FROM items JOIN producers ON items.id_producers = producers.id_producers JOIN provides_items ON items.id_items = provides_items.id_items JOIN provides ON provides_items.id_provides = provides.id_provides;
 
@@ -334,13 +329,15 @@ BEGIN
 				)
 			LOOP
 		      SELECT regexp_substr(i.str, '[^,]+', 1, 1), regexp_substr(i.str, '[^,]+', 1, 2) INTO itsid,itsval FROM dual;
-		      INSERT INTO sales_items(id_sales, id_items, quantity_sales_items) VALUES(salesid, itsid, itsval);
+		      INSERT INTO sales_items VALUES(id_sales, id_items, quantity_sales_items) VALUES(salesid, itsid, itsval);
 			END LOOP;
 			COMMIT;
       RETURN 1;
 		END IF;
+	ROLLBACK;
     RETURN 0;
 	END IF;
+  ROLLBACK;
   RETURN 0;
 END;
 
@@ -540,6 +537,44 @@ BEGIN
  	END LOOP;
  	DELETE FROM providers WHERE id_providers = id AND id_providers != 1;
  	COMMIT;
+ 	RETURN 1;
+ 	exception
+ 		WHEN OTHERS THEN
+ 			ROLLBACK;
+ 			RETURN 0;
+END;
+
+CREATE OR REPLACE FUNCTION IINSERTEMPLOYEES (nname in employees.name_employees%type, ssurname in employees.surname_employees%type, eemail in employees.email_employees%type, password in employees.password_employees%type, aadress in employees.address_employees%type, pphone in employees.phone_number_employees%type)
+RETURN NUMBER
+IS
+PRAGMA AUTONOMOUS_TRANSACTION;
+BEGIN
+	IF nname IS NULL THEN
+		RAISE_APPLICATION_ERROR(-20001, 'Empty name');
+	RETURN 0;
+	END IF;
+	IF ssurname IS NULL THEN
+		RAISE_APPLICATION_ERROR(-20001, 'Emppty surrname');
+	RETURN 0;
+	END IF;
+	IF eemail IS NULL THEN 
+		RAISE_APPLICATION_ERROR(-20001, 'Empty email');
+	RETURN 0;
+	END IF;
+	IF password IS NULL THEN 
+		RAISE_APPLICATION_ERROR(-20001, 'Empty password');
+	RETURN 0;
+	END IF;
+	IF aadress IS NULL THEN 
+		RAISE_APPLICATION_ERROR(-20001, 'Empty address');
+	RETURN 0;
+	END IF;
+	IF pphone IS NULL THEN 
+		RAISE_APPLICATION_ERROR(-20001, 'Empty pphone');
+	RETURN 0;
+	END IF;
+	INSERT INTO employees VALUES (employees_seq.NEXTVAL, nname, ssurname,eemail, DBMS_OBFUSCATION_TOOLKIT.md5 (input => UTL_RAW.cast_to_raw(password)), aadress, pphone);
+COMMIT;
  	RETURN 1;
  	exception
  		WHEN OTHERS THEN

@@ -50,7 +50,7 @@ class Model_m extends CI_Model {
 
 	public function getItemsView()
 	{
-		$query = $this->db->query("SELECT * from item_relation");
+		$query = $this->db->query("SELECT * from item_relation WHERE id_items > 1");
 		return $query->result();
 	}
 
