@@ -12,6 +12,7 @@
   		<?php if(isset($provide->SPRZEDAWCA)): ?>
 			<h4>Sprzedawca: <?php echo $provide->SPRZEDAWCA; ?></h4>
   		<?php endif; ?>
+  		<?php if(empty($provide->ID_PROVIDES)): ?>
   		<div class="form-group">
 	    	<label for="provider">Dostawca</label>
 	    	<select name="provider" class="custom-select" required>
@@ -26,6 +27,7 @@
 			<?php endif; ?>
 	  	</div>
 		<button type="submit" class="btn btn-primary">Zapisz</button>
+	<?php endif; ?>
   	</form>
   	<?php if(!empty($provide->ID_PROVIDES)): ?>
 		<div class="clearfix"></div>

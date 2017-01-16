@@ -1,0 +1,36 @@
+https://github.com/WiPeK/projectDatabases
+1. Pobieramy
+Oracle Database 11g
+ftp://orkan.tu.kielce.pl/Oracle/Oracle%20Database%2011g/Oracle%20Database%2011g%20Express%20Edition%20Release%202%20for%20Windows/OracleXE112_Win32.zip
+
+Xampp
+https://www.apachefriends.org/xampp-files/5.5.38/xampp-win32-5.5.38-3-VC11-installer.exe
+Wymagana dana wersja ponieważ php jest skompilowane dla oracle database 11g
+
+Oracle instant client 11_2
+https://drive.google.com/open?id=0Bx6QHLTsiDE8bkpMdGRGNHUzQzA
+Wypakowujemy w dowolne miejsce i dodajemy do tego folderu zmienną środowiskową
+https://www.youtube.com/watch?v=QtmuSBVF8Nw
+Resetujemy komputer
+
+Po zainstalowaniu xampp wchodzimy do folderu gdzie zainstalowaliśmy xampp'a do folderu php i otwieramy plik php.ini
+
+linijke
+;extension=php_oci8_11g.dll
+zmieniamy na
+extension=php_oci8_11g.dll
+
+oraz
+;extension=php_pdo_oci.dll
+na
+extension=php_pdo_oci.dll
+
+Zawartość paczki sklep_projekt.rar wypakowujemy do xampp/htdocs/
+
+W oracle tworzymy nową baze i importujemy skrypt sklep.sql
+Po zaimportowaniu i uruchomieniu skryptu wchodzimy do xampp/htdocs/sklep_projekt/application/config/database.php i edytujemy
+'username' => 'Nazwa_utworzonej_bazy_danych',
+	'password' => 'hasło_do_bazy_danych',
+
+Strona główna sklepu http://localhost/sklep_projekt/
+

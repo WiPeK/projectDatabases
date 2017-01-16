@@ -331,7 +331,7 @@ class Admin_m extends CI_Model {
 
 	public function getItemsToSale($id)
 	{
-		$query = $this->db->query("SELECT * FROM getItemsToSale WHERE sales.id_sales = $id");
+		$query = $this->db->query("SELECT items.id_items, CONCAT(items.name_items, CONCAT(' ', items.model_items)) as item, sales_items.QUANTITY_SALES_ITEMS, producers.name_producers FROM items JOIN producers ON items.id_producers = producers.id_producers JOIN sales_items ON items.id_items = sales_items.id_items JOIN sales ON sales_items.id_sales = sales.id_sales WHERE sales.id_sales = $id");
 		return $query->result();
 	}
 
