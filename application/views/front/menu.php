@@ -4,9 +4,6 @@
     <li class="nav-item active">
       <a class="nav-link" href="<?php echo site_url(); ?>">Strona główna <span class="sr-only">(current)</span></a>
     </li>
-    <li class="nav-item">
-      <a class="nav-link" href="#">Szukaj</a>
-    </li>
     <?php if(!empty($_SESSION['basket'])): ?>
     <li class="nav-item">
       <a class="nav-link" href="<?php echo site_url('home/basket'); ?>">Koszyk</a>
